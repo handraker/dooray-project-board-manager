@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <property name="CONSOLE_LOG_PATTERN_CUSTOM"
+              value="${CONSOLE_LOG_PATTERN_CUSTOM:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){yellow} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39} %5line){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
+    <property name="FILE_LOG_PATTERN_CUSTOM"
+              value="${FILE_LOG_PATTERN_CUSTOM:-%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} %5line : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${LEVEL}</level>
+        </filter>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN_CUSTOM}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="app_log" class="ch.qos.logback.core.FileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>TRACE</level>
+        </filter>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                <marker>ACCESS</marker>
+            </evaluator>
+            <onMatch>DENY</onMatch>
+        </filter>
+        <File>/home1/irteam/logs/tomcat/dpbm.log</File>
+        <append>true</append>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN_CUSTOM}</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="console" />
+        <appender-ref ref="app_log" />
+    </root>
+</configuration>

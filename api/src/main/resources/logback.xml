@@ -8,18 +8,12 @@
               value="${FILE_LOG_PATTERN_CUSTOM:-%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} %5line : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>${LEVEL}</level>
-        </filter>
         <encoder>
-            <pattern>${FILE_LOG_PATTERN_CUSTOM}</pattern>
+            <pattern>${CONSOLE_LOG_PATTERN_CUSTOM}</pattern>
         </encoder>
     </appender>
 
     <appender name="app_log" class="ch.qos.logback.core.FileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>TRACE</level>
-        </filter>
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
             <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
                 <marker>ACCESS</marker>
@@ -33,8 +27,50 @@
         </encoder>
     </appender>
 
-    <root level="INFO">
+    <logger name="jdbc.sqlonly" level="OFF" />
+    <logger name="jdbc.audit" level="OFF" />
+    <logger name="jdbc.resultset" level="OFF" />
+    <logger name="jdbc.sqltiming" level="DEBUG">
+        <appender-ref ref="app_log" />
+    </logger>
+    <logger name="jdbc.resultsettable" level="DEBUG">
+        <appender-ref ref="app_log" />
+    </logger>
+    <logger name="jdbc.connection" level="DEBUG">
+        <appender-ref ref="app_log" />
+    </logger>
+    <logger name="org.springframework" level="INFO">
         <appender-ref ref="console" />
         <appender-ref ref="app_log" />
-    </root>
+    </logger>
+    <logger name="org.springframework.cache" level="TRACE">
+        <appender-ref ref="app_log" />
+    </logger>
+    <logger name="org.springframework.orm.jpa.JpaTransactionManager" level="DEBUG" additivity="false">
+        <appender-ref ref="app_log" />
+    </logger>
+    <logger name="org.springframework.data.cassandra.core.cql" level="DEBUG">
+        <appender-ref ref="app_log" />
+    </logger>
+    <logger name="org.hibernate.transaction.JDBCTransaction" level="DEBUG">
+        <appender-ref ref="app_log" />
+    </logger>
+    <logger name="org.hibernate.jdbc.ConnectionManager" level="DEBUG">
+        <appender-ref ref="app_log" />
+    </logger>
+    <logger name="com.zaxxer.hikari" level="debug" additivity="false">
+        <appender-ref ref="app_log" />
+    </logger>
+    <logger name="logging.level.com.querydsl.sql" level="DEBUG">
+        <appender-ref ref="app_log" />
+    </logger>
+    <logger name="com.toast.cloud" level="INFO">
+        <appender-ref ref="console" />
+    </logger>
+    <logger name="com.toast.cloud" level="DEBUG">
+        <appender-ref ref="app_log" />
+    </logger>
+    <logger name="org.quartz" level="TRACE">
+        <appender-ref ref="app_log" />
+    </logger>
 </configuration>

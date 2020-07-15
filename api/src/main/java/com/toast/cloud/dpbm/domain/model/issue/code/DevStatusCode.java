@@ -1,6 +1,6 @@
 package com.toast.cloud.dpbm.domain.model.issue.code;
 
-public enum ParentIssueStatusCode {
+public enum DevStatusCode {
 
     WAITING,
     WORKING,

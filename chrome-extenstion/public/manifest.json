@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+
+  "name": "Dooray Project Board Manager Ext",
+  "description": "Dooray Project Board Manager Ext",
+  "version": "1.0",
+  "content_scripts": [
+    {
+      "matches": ["https://nhnent.dooray.com/*"],
+      "run_at": "document_end",
+      "js": ["contentScript.js"]
+    }
+  ]
+}

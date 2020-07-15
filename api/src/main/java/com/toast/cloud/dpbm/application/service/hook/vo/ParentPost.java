@@ -1,4 +1,4 @@
-package com.toast.cloud.dpbm.application.hook.vo;
+package com.toast.cloud.dpbm.application.service.hook.vo;
 
 public class ParentPost {
 

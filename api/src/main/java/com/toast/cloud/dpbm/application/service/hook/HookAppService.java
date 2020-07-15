@@ -1,7 +1,7 @@
-package com.toast.cloud.dpbm.application.hook;
+package com.toast.cloud.dpbm.application.service.hook;
 
 import com.toast.cloud.common.utils.ObjectMapperUtils;
-import com.toast.cloud.dpbm.application.hook.vo.PostCreatedRequest;
+import com.toast.cloud.dpbm.application.service.hook.vo.PostCreatedRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

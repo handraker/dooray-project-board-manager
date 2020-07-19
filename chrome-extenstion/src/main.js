@@ -1,6 +1,11 @@
 import Vue from 'vue';
 import App from './App.vue';
 
+import store from '@/store';
+import '@/config/axios';
+import '@/config/bootstrap';
+import '@/assets/main.css';
+
 Vue.config.productionTip = false;
 
 let currentPath = '';
@@ -36,6 +41,7 @@ setInterval(() => {
     section.id = 'dooray-project-board-manager';
     section.className = 'main-contents-body layout-row';
     section.style.display = 'none';
+    section.style.height = '100%';
 
     let app = document.createElement('div');
     section.appendChild(app);
@@ -47,6 +53,7 @@ setInterval(() => {
 
     new Vue({
       el: app,
+      store,
       render: (h) => h(App),
     });
 

@@ -6,6 +6,8 @@ import org.springframework.data.repository.NoRepositoryBean;
 @NoRepositoryBean
 public interface IssueRepositoryCustom {
 
-    IssueWorkflowStatistics getIssueWorkflowStatistics(String parentIssueId);
+    IssueWorkflowStatistics getMandaysIssueWorkflowStatistics(String parentIssueId);
+
+    IssueWorkflowStatistics getCountIssueWorkflowStatistics(String parentIssueId);
 
 }

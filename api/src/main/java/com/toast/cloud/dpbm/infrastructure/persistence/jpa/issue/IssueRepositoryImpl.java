@@ -19,13 +19,28 @@ public class IssueRepositoryImpl extends QuerydslRepositorySupport implements Is
     }
 
     @Override
-    public IssueWorkflowStatistics getIssueWorkflowStatistics(String parentIssueId) {
+    public IssueWorkflowStatistics getMandaysIssueWorkflowStatistics(String parentIssueId) {
         QIssue issue = QIssue.issue;
 
         List<IssueWorkflowStatisticsItem> items = from(issue)
-            .select(Projections.constructor(IssueWorkflowStatisticsItem.class, issue.workflowTypeCode, issue.mandays.sum(), issue.count()))
+            .select(Projections.constructor(IssueWorkflowStatisticsItem.class,
+                                            issue.workflowId,
+                                            issue.workflowTypeCode,
+                                            issue.mandays.sum()))
             .where(issue.parentIssueId.eq(parentIssueId))
-            .groupBy(issue.workflowTypeCode)
+            .groupBy(issue.workflowId, issue.workflowTypeCode)
+            .fetch();
+        return new IssueWorkflowStatistics(items);
+    }
+
+    @Override
+    public IssueWorkflowStatistics getCountIssueWorkflowStatistics(String parentIssueId) {
+        QIssue issue = QIssue.issue;
+
+        List<IssueWorkflowStatisticsItem> items = from(issue)
+            .select(Projections.constructor(IssueWorkflowStatisticsItem.class, issue.workflowId, issue.workflowTypeCode, issue.count()))
+            .where(issue.parentIssueId.eq(parentIssueId))
+            .groupBy(issue.workflowId, issue.workflowTypeCode)
             .fetch();
         return new IssueWorkflowStatistics(items);
     }

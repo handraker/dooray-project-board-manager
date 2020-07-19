@@ -1,0 +1,89 @@
+.board * {
+  font-family: 'Nanum Gothic', Meiryo, 'Noto Sans JP', sans-serif,
+    'Lucida Sans Unicode', arial;
+}
+
+.board {
+  width: 100%;
+  padding: 0 20px 20px 20px;
+}
+
+.board .module-board > h4 {
+  font-weight: bold;
+}
+
+.board .table td {
+  vertical-align: middle;
+}
+
+.board .progress {
+  position: relative;
+  height: 20px !important;
+  background-color: rgb(28, 31, 59) !important;
+  margin: 0 !important;
+}
+
+.board .progress-bar-title {
+  position: absolute;
+  text-align: center;
+  line-height: 20px; /* line-height should be equal to bar height */
+  overflow: hidden;
+  color: #fff;
+  right: 0;
+  left: 0;
+  top: 0;
+}
+
+.board .tab-content {
+  height: 100%;
+  overflow-y: auto;
+  padding-bottom: 100px;
+}
+
+.b-popover {
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0,0,0,.2);
+  border-radius: .3rem;
+}
+
+.b-popover .popover-body {
+  padding: .5rem .75rem;
+  color: #212529;
+}
+
+.b-popover > .arrow {
+  position: absolute;
+  display: block;
+  width: 1rem;
+  height: .5rem;
+  margin: 0 .3rem;
+  border-width: 0 !important;
+}
+
+.b-popover > .arrow::before {
+  content: "";
+  bottom: 0;
+  border-width: .5rem .5rem 0;
+  border-top-color: rgba(0,0,0,.25);
+  border-color: transparent;
+  border-style: solid;
+  display: block;
+}
+
+.b-popover > .arrow::after {
+  content: "";
+  bottom: 1px;
+  border-width: .5rem .5rem 0;
+  border-top-color: #fff;
+}
+
+.bs-popover-top > .arrow::before {
+  bottom: 0;
+  border-width: .5rem .5rem 0;
+  border-top-color: rgba(0,0,0,.25);
+}
+
+.bs-popover-top > .arrow {
+  bottom: calc(-.5rem - 1px);
+}

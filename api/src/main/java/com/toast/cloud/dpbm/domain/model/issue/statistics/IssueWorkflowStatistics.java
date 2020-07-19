@@ -4,26 +4,22 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
 public class IssueWorkflowStatistics {
 
-    private BigDecimal totalMandays;
-    private long totalCount;
-    private Set<IssueWorkflowStatisticsItem> items;
+    private BigDecimal totalValue;
+    private List<IssueWorkflowStatisticsItem> items;
 
     public IssueWorkflowStatistics(List<IssueWorkflowStatisticsItem> items) {
-        this.totalMandays = items.stream()
-            .map(IssueWorkflowStatisticsItem::getMandays)
+        this.totalValue = items.stream()
+            .map(IssueWorkflowStatisticsItem::getValue)
             .reduce(BigDecimal.ZERO, (l, r) -> l.add(r));
-        this.totalCount = items.stream()
-            .mapToLong(IssueWorkflowStatisticsItem::getCount)
-            .sum();
         this.items = items.stream()
-            .map(item -> item.calculateRatio(totalMandays, totalCount))
-            .collect(Collectors.toSet());
+            .map(item -> item.calculateRatio(totalValue))
+            .sorted()
+            .collect(Collectors.toList());
     }
 
 }

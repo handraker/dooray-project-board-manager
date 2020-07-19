@@ -5,10 +5,7 @@ import com.toast.cloud.dpbm.application.service.board.ParentIssueBoardAppService
 import com.toast.cloud.dpbm.application.service.board.vo.ParentIssueBoardCriteria;
 import com.toast.cloud.dpbm.interfaces.board.web.v1_0.vo.GetParentIssueBoardRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -18,11 +15,11 @@ public class BoardController {
 
     private final ParentIssueBoardAppService parentIssueBoardAppService;
 
-    @GetMapping("/projects/{projectId}/boards/parent-issue")
+    @CrossOrigin("https://nhnent.dooray.com")
+    @GetMapping("/dpbm/projects/{projectId}/boards/parent-issue")
     public ParentIssueBoard getParentIssueBoard(@PathVariable("projectId") String projectId,
                                                 @Valid @ModelAttribute GetParentIssueBoardRequest request) {
-        ParentIssueBoardCriteria criteria = new ParentIssueBoardCriteria(request.getPageable(),
-                                                                         request.getModuleId(),
+        ParentIssueBoardCriteria criteria = new ParentIssueBoardCriteria(request.getModuleId(),
                                                                          request.getMilestoneId());
         return parentIssueBoardAppService.getParentIssueBoard(projectId, criteria);
     }

@@ -8,11 +8,11 @@ import com.toast.cloud.dpbm.domain.model.issue.ParentIssue;
 import com.toast.cloud.dpbm.domain.model.issue.ParentIssuePredicate;
 import com.toast.cloud.dpbm.domain.model.issue.ParentIssueRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @AllArgsConstructor
 @Service
@@ -22,14 +22,16 @@ public class ParentIssueBoardAppService {
     private final ParentIssueRepository parentIssueRepository;
 
     public ParentIssueBoard getParentIssueBoard(String projectId, ParentIssueBoardCriteria criteria) {
-        Page<ParentIssue> parentIssues = parentIssueRepository.findAll(ParentIssuePredicate.where(projectId,
+        Iterable<ParentIssue> iterable = parentIssueRepository.findAll(ParentIssuePredicate.where(projectId,
                                                                                                   criteria.getModuleId(),
-                                                                                                  criteria.getMilestoneId()),
-                                                                       criteria.getPageable());
-        List<ParentIssueBoardItem> items = parentIssues.stream()
-            .map(parentIssue -> new ParentIssueBoardItem(parentIssue, issueRepository.getIssueWorkflowStatistics(parentIssue.getId())))
+                                                                                                  criteria.getMilestoneId()));
+        List<ParentIssueBoardItem> items = StreamSupport.stream(iterable.spliterator(), false)
+            .map(parentIssue -> new ParentIssueBoardItem(parentIssue,
+                                                         issueRepository.getMandaysIssueWorkflowStatistics(parentIssue.getId()),
+                                                         issueRepository.getCountIssueWorkflowStatistics(parentIssue.getId())))
+            .sorted()
             .collect(Collectors.toList());
-        return new ParentIssueBoard(items, parentIssues.getTotalElements());
+        return new ParentIssueBoard(items);
     }
 
 }

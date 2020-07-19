@@ -10,6 +10,5 @@ import java.util.List;
 public class ParentIssueBoard {
 
     private List<ParentIssueBoardItem> items;
-    private long totalCount;
 
 }

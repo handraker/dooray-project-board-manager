@@ -2,9 +2,7 @@ package com.toast.cloud.dpbm.domain.model.issue;
 
 import com.toast.cloud.common.jpa.enitty.AbstractBaseEntity;
 import com.toast.cloud.dpbm.domain.model.issue.code.WorkflowTypeCode;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -28,5 +26,28 @@ public class Issue extends AbstractBaseEntity<String> {
     @Enumerated(EnumType.STRING)
     private WorkflowTypeCode workflowTypeCode;
     private String milestoneId;
+
+    @Builder(builderMethodName = "factory", buildMethodName = "newInstance")
+    private Issue(String id,
+                  String parentIssueId,
+                  @NonNull String projectId,
+                  @NonNull String title,
+                  String moduleId,
+                  String workingTypeId,
+                  BigDecimal mandays,
+                  @NonNull String workflowId,
+                  @NonNull WorkflowTypeCode workflowTypeCode,
+                  String milestoneId) {
+        generateId(id);
+        this.parentIssueId = parentIssueId;
+        this.projectId = projectId;
+        this.title = title;
+        this.moduleId = moduleId;
+        this.workingTypeId = workingTypeId;
+        this.mandays = mandays;
+        this.workflowId = workflowId;
+        this.workflowTypeCode = workflowTypeCode;
+        this.milestoneId = milestoneId;
+    }
 
 }

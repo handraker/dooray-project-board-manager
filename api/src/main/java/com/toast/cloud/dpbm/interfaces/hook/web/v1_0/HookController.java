@@ -16,7 +16,7 @@ public class HookController {
 
     private final HookAppService hookAppService;
 
-    @PostMapping("/hooks/process")
+    @PostMapping("/dpbm/hooks/process")
     public void process(@RequestBody Map<String, Object> request) {
         hookAppService.process((String)request.get("webhookType"), request);
     }

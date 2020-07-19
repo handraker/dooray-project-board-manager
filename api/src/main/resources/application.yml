@@ -1,9 +1,9 @@
 spring:
   datasource:
     hikari:
-      jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/rds_mssql_alpha?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
-      username: root
-      password: nhn!@#123
+      jdbc-url: jdbc:log4jdbc:mysql://88770143-3fe2-454b-85be-31afbacbef33.private.rds.cloud.toast.com:13306/rds_mssql_alpha?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
+      username: rds
+      password: rds!#%135
       minimum-idle: 5
       maximum-pool-size: 20
       connection-test-query: SELECT 1

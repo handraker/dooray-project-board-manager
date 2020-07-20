@@ -8,7 +8,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Setter
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "dpbm_parent_issue")
@@ -16,7 +15,9 @@ import java.time.LocalDate;
 public class ParentIssue extends AbstractBaseEntity<String> {
 
     private String projectId;
+    @Setter
     private String title;
+    @Setter
     private String moduleId;
     @Enumerated(EnumType.STRING)
     private DevStatusCode devStatusCode;
@@ -30,6 +31,7 @@ public class ParentIssue extends AbstractBaseEntity<String> {
     private LocalDate deployStartDate;
     @Convert(converter = LocalDateConverter.class)
     private LocalDate deployEndDate;
+    @Setter
     private String milestoneId;
 
     @Builder(builderMethodName = "factory", buildMethodName = "newInstance")

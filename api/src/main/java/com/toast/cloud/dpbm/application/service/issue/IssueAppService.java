@@ -15,9 +15,7 @@ public class IssueAppService {
 
     @Transactional
     public void create(IssueDTO issueDTO) {
-        if (issueRepository.findById(issueDTO.getIssueId()).isPresent()) {
-            return;
-        }
+        issueRepository.deleteById(issueDTO.getIssueId());
 
         Issue issue = Issue.factory()
             .id(issueDTO.getIssueId())

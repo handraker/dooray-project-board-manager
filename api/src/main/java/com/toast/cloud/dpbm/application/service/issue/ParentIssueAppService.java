@@ -15,23 +15,26 @@ public class ParentIssueAppService {
 
     @Transactional
     public void create(ParentIssueDTO parentIssueDTO) {
-        if (parentIssueRepository.findById(parentIssueDTO.getParentIssueId()).isPresent()) {
-            return;
-        }
-
-        ParentIssue parentIssue = ParentIssue.factory()
-            .id(parentIssueDTO.getParentIssueId())
-            .projectId(parentIssueDTO.getProjectId())
-            .title(parentIssueDTO.getTitle())
-            .moduleId(parentIssueDTO.getModuleId())
-            .devStatusCode(parentIssueDTO.getDevStatusCode())
-            .devStartDate(parentIssueDTO.getDevStartDate())
-            .devEndDate(parentIssueDTO.getDevEndDate())
-            .deployStatusCode(parentIssueDTO.getDeployStatusCode())
-            .deployStartDate(parentIssueDTO.getDeployStartDate())
-            .deployEndDate(parentIssueDTO.getDeployEndDate())
-            .milestoneId(parentIssueDTO.getMilestoneId())
-            .newInstance();
+        ParentIssue parentIssue = parentIssueRepository.findById(parentIssueDTO.getParentIssueId())
+            .map(inner -> {
+                inner.setTitle(parentIssueDTO.getTitle());
+                inner.setModuleId(parentIssueDTO.getModuleId());
+                inner.setMilestoneId(parentIssueDTO.getMilestoneId());
+                return inner;
+            })
+            .orElseGet(() -> ParentIssue.factory()
+                .id(parentIssueDTO.getParentIssueId())
+                .projectId(parentIssueDTO.getProjectId())
+                .title(parentIssueDTO.getTitle())
+                .moduleId(parentIssueDTO.getModuleId())
+                .devStatusCode(parentIssueDTO.getDevStatusCode())
+                .devStartDate(parentIssueDTO.getDevStartDate())
+                .devEndDate(parentIssueDTO.getDevEndDate())
+                .deployStatusCode(parentIssueDTO.getDeployStatusCode())
+                .deployStartDate(parentIssueDTO.getDeployStartDate())
+                .deployEndDate(parentIssueDTO.getDeployEndDate())
+                .milestoneId(parentIssueDTO.getMilestoneId())
+                .newInstance());
         parentIssueRepository.save(parentIssue);
     }
 

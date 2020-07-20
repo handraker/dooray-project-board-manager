@@ -54,10 +54,6 @@ export default {
     this.getTags();
     this.getWorkflows();
     this.getMilestones();
-
-    chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-      console.log('here');
-    });
   },
   methods: {
     ...mapActions('dooray', ['getTags', 'getWorkflows', 'getMilestones']),

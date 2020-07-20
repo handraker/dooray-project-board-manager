@@ -45,7 +45,6 @@ setInterval(() => {
 
     let app = document.createElement('div');
     section.appendChild(app);
-    console.log(app);
 
     originalSection = document.querySelector('.main-contents-body');
     parentSection = originalSection.parentElement;

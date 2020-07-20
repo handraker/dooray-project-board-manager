@@ -7,6 +7,9 @@ module.exports = {
       splitChunks: false,
     },
   },
+  css: {
+    extract: false,
+  },
   filenameHashing: true,
   devServer: {
     disableHostCheck: true,

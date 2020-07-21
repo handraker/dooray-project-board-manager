@@ -35,16 +35,7 @@ const mutations = {
       .subscribe((tags) => (state.tags = tags));
   },
   setWorkflows(state, { workflows }) {
-    from(workflows)
-      .pipe(
-        reduce((acc, value) => {
-          return {
-            ...acc,
-            [value.id]: value,
-          };
-        }, {})
-      )
-      .subscribe((workflows) => (state.workflows = workflows));
+    state.workflows = workflows;
     console.log(state);
   },
   setMilestones(state, { milestones }) {
@@ -72,9 +63,9 @@ const getters = {
     }
   },
   getNotClosedWorkflowIds: (state) => {
-    return Object.keys(state.workflows).filter(
-      (id) => state.workflows[id].class != 'closed'
-    );
+    return state.workflows
+      .filter((workflow) => workflow.class != 'closed')
+      .map((workflow) => workflow.id);
   },
 };
 

@@ -20,6 +20,7 @@
 <script>
 import { mapActions } from 'vuex';
 
+import MilestoneBoard from '@/components/board/MilestoneBoard.vue';
 import ParentIssueBoard from '@/components/board/ParentIssueBoard.vue';
 import Configuration from '@/components/config/Configuration.vue';
 
@@ -31,6 +32,10 @@ export default {
         {
           title: 'Parent Issue Board',
           component: ParentIssueBoard,
+        },
+        {
+          title: 'Milestone Board',
+          component: MilestoneBoard,
         },
         {
           title: 'Configuration',

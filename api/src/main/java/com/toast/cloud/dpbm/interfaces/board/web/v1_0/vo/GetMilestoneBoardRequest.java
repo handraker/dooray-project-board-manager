@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class GetParentIssueBoardRequest {
+public class GetMilestoneBoardRequest {
 
     @NotNull
     private String moduleId;

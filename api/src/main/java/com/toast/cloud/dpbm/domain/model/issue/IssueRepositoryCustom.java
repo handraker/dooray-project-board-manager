@@ -1,13 +1,14 @@
 package com.toast.cloud.dpbm.domain.model.issue;
 
+import com.querydsl.core.types.Predicate;
 import com.toast.cloud.dpbm.domain.model.issue.statistics.IssueWorkflowStatistics;
 import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
 public interface IssueRepositoryCustom {
 
-    IssueWorkflowStatistics getMandaysIssueWorkflowStatistics(String parentIssueId);
+    IssueWorkflowStatistics getMandaysIssueWorkflowStatistics(Predicate predicate);
 
-    IssueWorkflowStatistics getCountIssueWorkflowStatistics(String parentIssueId);
+    IssueWorkflowStatistics getCountIssueWorkflowStatistics(Predicate predicate);
 
 }

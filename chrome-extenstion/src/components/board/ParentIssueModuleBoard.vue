@@ -8,6 +8,17 @@
         {{ moduleName }}
       </h4>
       <div class="btn-area">
+        <div class="progress">
+          <div
+            class="progress-bar"
+            role="progressbar"
+            :style="{ width: `${progress}%` }"
+            :aria-valuenow="importedCount"
+            aria-valuemin="0"
+            :aria-valuemax="totalCount"
+          ></div>
+          <div class="progress-bar-title">{{ progress }}%</div>
+        </div>
         <button
           :disabled="selectedItems.length === 0"
           class="btn btn-sm btn-primary mr-1"
@@ -41,12 +52,12 @@
             <input type="checkbox" @click="selectAll($event)" />
           </th>
           <th scope="col">상위 업무</th>
-          <th scope="col">하위 업무</th>
-          <th scope="col">개발 상태</th>
-          <th scope="col">개발 기한</th>
+          <th scope="col" class="text-center">하위 업무</th>
+          <th scope="col" class="text-center">개발 상태</th>
+          <th scope="col" class="text-center">개발 기한</th>
           <th scope="col" class="text-right">남은 작업일</th>
-          <th scope="col">배포 상태</th>
-          <th scope="col">배포 기한</th>
+          <th scope="col" class="text-center">배포 상태</th>
+          <th scope="col" class="text-center">배포 기한</th>
           <th scope="col">마일스톤</th>
         </tr>
       </thead>
@@ -126,7 +137,7 @@
 
 <script>
 import { from } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, toArray } from 'rxjs/operators';
 import { mapState, mapGetters } from 'vuex';
 import { reduce } from 'lodash-es';
 
@@ -156,6 +167,8 @@ export default {
     return {
       selectedItems: [],
       boardItems: [],
+      importedCount: 0,
+      totalCount: 0,
     };
   },
   computed: {
@@ -166,8 +179,15 @@ export default {
       'getWorkingTypeId',
       'getMandays',
     ]),
-    ...mapState('dooray', ['tags', 'milestones', 'workflows']),
+    ...mapState('dooray', ['tags', 'milestones']),
     ...mapGetters('dooray', ['getMilestone']),
+    progress() {
+      if (this.importedCount == 0 || this.totalCount == 0) {
+        return 0;
+      }
+
+      return Math.round((this.importedCount / this.totalCount) * 100);
+    },
     moduleColor() {
       return `#${this.getModule(this.moduleId).color}`;
     },
@@ -198,6 +218,9 @@ export default {
   },
   methods: {
     importChildIssues() {
+      this.importedCount = 0;
+      this.totalCount = 0;
+
       from(this.selectedItems)
         .pipe(
           map((item) => item.parentIssue.parentIssueId),
@@ -205,6 +228,11 @@ export default {
             doorayService.getChildIssue$({ parentIssueId })
           ),
           mergeMap((response) => response.result.contents),
+          toArray(),
+          mergeMap((contents) => {
+            this.totalCount = contents.length;
+            return contents;
+          }),
           mergeMap((content) =>
             issueService.create$({
               issueId: content.id,
@@ -221,6 +249,7 @@ export default {
           )
         )
         .subscribe({
+          next: () => this.importedCount++,
           complete: () => this.getParentIssueBoard(),
           error: () => this.getParentIssueBoard(),
         });
@@ -280,14 +309,18 @@ export default {
 
 <style scoped>
 .board .module-board {
-  margin-top: 10px;
+  margin-top: 32px;
   position: relative;
 }
 
 .board .module-board .btn-area {
   position: absolute;
-  top: 0;
+  top: -22px;
   right: 0;
+}
+
+.board .module-board .btn-area .progress {
+  margin-bottom: 2px !important;
 }
 
 .board td.dev-status-cell,

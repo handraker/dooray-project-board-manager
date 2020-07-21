@@ -1,12 +1,9 @@
 package com.toast.cloud.dpbm.application.service.board;
 
+import com.querydsl.core.types.Predicate;
 import com.toast.cloud.dpbm.application.model.board.ParentIssueBoard;
 import com.toast.cloud.dpbm.application.model.board.ParentIssueBoardItem;
-import com.toast.cloud.dpbm.application.service.board.vo.ParentIssueBoardCriteria;
-import com.toast.cloud.dpbm.domain.model.issue.IssueRepository;
-import com.toast.cloud.dpbm.domain.model.issue.ParentIssue;
-import com.toast.cloud.dpbm.domain.model.issue.ParentIssuePredicate;
-import com.toast.cloud.dpbm.domain.model.issue.ParentIssueRepository;
+import com.toast.cloud.dpbm.domain.model.issue.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +18,20 @@ public class ParentIssueBoardAppService {
     private final IssueRepository issueRepository;
     private final ParentIssueRepository parentIssueRepository;
 
-    public ParentIssueBoard getParentIssueBoard(String projectId, ParentIssueBoardCriteria criteria) {
-        Iterable<ParentIssue> iterable = parentIssueRepository.findAll(ParentIssuePredicate.where(projectId,
-                                                                                                  criteria.getModuleId(),
-                                                                                                  criteria.getMilestoneId()));
+    public ParentIssueBoard getParentIssueBoard(String projectId, String moduleId) {
+        Iterable<ParentIssue> iterable = parentIssueRepository.findAll(ParentIssuePredicate.builder()
+                                                                           .projectId(projectId)
+                                                                           .moduleId(moduleId)
+                                                                           .build());
         List<ParentIssueBoardItem> items = StreamSupport.stream(iterable.spliterator(), false)
-            .map(parentIssue -> new ParentIssueBoardItem(parentIssue,
-                                                         issueRepository.getMandaysIssueWorkflowStatistics(parentIssue.getId()),
-                                                         issueRepository.getCountIssueWorkflowStatistics(parentIssue.getId())))
+            .map(parentIssue -> {
+                Predicate predicate = IssuePredicate.builder()
+                    .parentIssueId(parentIssue.getId())
+                    .build();
+                return new ParentIssueBoardItem(parentIssue,
+                                                issueRepository.getMandaysIssueWorkflowStatistics(predicate),
+                                                issueRepository.getCountIssueWorkflowStatistics(predicate));
+            })
             .sorted()
             .collect(Collectors.toList());
         return new ParentIssueBoard(items);

@@ -39,13 +39,14 @@ export default {
   },
   computed: {
     ...mapState('dooray', ['workflows']),
+    workflow() {
+      return this.workflows.find((workflow) => this.workflowId === workflow.id);
+    },
     detailText() {
-      return `${this.workflows[this.workflowId]?.name} - ${this.value}${
-        this.postfix
-      } (${this.ratio}%)`;
+      return `${this.workflow?.name} - ${this.value}${this.postfix} (${this.ratio}%)`;
     },
     style() {
-      switch (this.workflows[this.workflowId]?.class) {
+      switch (this.workflow?.class) {
         case 'backlog':
           return {
             'background-color': '#d35400',

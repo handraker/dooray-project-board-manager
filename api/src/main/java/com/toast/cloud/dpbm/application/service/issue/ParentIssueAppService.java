@@ -1,6 +1,7 @@
 package com.toast.cloud.dpbm.application.service.issue;
 
 import com.toast.cloud.dpbm.application.model.issue.ParentIssueDTO;
+import com.toast.cloud.dpbm.domain.model.issue.IssueRepository;
 import com.toast.cloud.dpbm.domain.model.issue.ParentIssue;
 import com.toast.cloud.dpbm.domain.model.issue.ParentIssueRepository;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ParentIssueAppService {
 
     private final ParentIssueRepository parentIssueRepository;
+    private final IssueRepository issueRepository;
 
     @Transactional
     public void create(ParentIssueDTO parentIssueDTO) {
@@ -52,6 +54,11 @@ public class ParentIssueAppService {
                                parentIssueDTO.getMilestoneId());
             parentIssueRepository.save(parentIssue);
         });
+    }
+
+    @Transactional
+    public void deleteChildIssue(String parentIssueId) {
+        issueRepository.deleteByParentIssue(parentIssueId);
     }
 
 }

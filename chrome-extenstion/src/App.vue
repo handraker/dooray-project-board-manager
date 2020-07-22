@@ -20,8 +20,9 @@
 <script>
 import { mapActions } from 'vuex';
 
-import MilestoneBoard from '@/components/board/MilestoneBoard.vue';
-import ParentIssueBoard from '@/components/board/ParentIssueBoard.vue';
+import MilestoneBoardMain from '@/components/board/MilestoneBoardMain.vue';
+import MilestoneParentIssueBoardMain from '@/components/board/MilestoneParentIssueBoardMain.vue';
+import ParentIssueBoardMain from '@/components/board/ParentIssueBoardMain.vue';
 import Configuration from '@/components/config/Configuration.vue';
 
 export default {
@@ -31,11 +32,15 @@ export default {
       tabs: [
         {
           title: 'Parent Issue Board',
-          component: ParentIssueBoard,
+          component: ParentIssueBoardMain,
+        },
+        {
+          title: 'Mileston Parent Issue Board',
+          component: MilestoneParentIssueBoardMain,
         },
         {
           title: 'Milestone Board',
-          component: MilestoneBoard,
+          component: MilestoneBoardMain,
         },
         {
           title: 'Configuration',

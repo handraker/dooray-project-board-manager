@@ -8,6 +8,7 @@
         :value="item.value"
         :ratio="item.ratio"
         :postfix="postfix"
+        @workflowClick="workflowClick"
       />
     </div>
   </div>
@@ -33,8 +34,8 @@ export default {
     },
   },
   methods: {
-    getPercentage(value) {
-      return Math.round((value / this.totalValue) * 100);
+    workflowClick(workflowId) {
+      this.$emit('workflowClick', workflowId);
     },
   },
 };

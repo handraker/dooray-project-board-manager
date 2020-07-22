@@ -7,6 +7,8 @@ import org.springframework.data.repository.NoRepositoryBean;
 @NoRepositoryBean
 public interface IssueRepositoryCustom {
 
+    void deleteByParentIssue(String parentIssueId);
+
     IssueWorkflowStatistics getMandaysIssueWorkflowStatistics(Predicate predicate);
 
     IssueWorkflowStatistics getCountIssueWorkflowStatistics(Predicate predicate);

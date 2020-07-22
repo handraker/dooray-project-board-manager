@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { from } from 'rxjs';
 import { map, reduce } from 'rxjs/operators';
 
@@ -8,7 +9,7 @@ const getDefaultState = () => {
     tags: {},
     tagPrefixs: {},
     workflows: {},
-    milestones: {},
+    milestones: [],
   };
 };
 
@@ -39,28 +40,38 @@ const mutations = {
     console.log(state);
   },
   setMilestones(state, { milestones }) {
-    from(milestones)
-      .pipe(
-        reduce((acc, value) => {
-          return {
-            ...acc,
-            [value.id]: value,
-          };
-        }, {})
-      )
-      .subscribe((milestones) => (state.milestones = milestones));
+    state.milestones = milestones;
     console.log(state);
   },
 };
 
 const getters = {
+  filteredMilestone: (state) => {
+    let milestones = state.milestones.filter(
+      (milestone) => milestone.status == 'open'
+    );
+    milestones.sort((l, r) => {
+      if (l.startedAt == null) {
+        return 1;
+      }
+
+      if (r.startedAt == null) {
+        return -1;
+      }
+
+      if (moment(l.startedAt).isBefore(moment(r.startedAt))) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+    return milestones;
+  },
   getMilestone: (state) => (id) => {
-    const milestone = state.milestones[id];
-    if (milestone === undefined) {
-      return {};
-    } else {
-      return milestone;
+    if (id == null) {
+      return { name: '' };
     }
+    return state.milestones.find((milestone) => milestone.id === id);
   },
   getNotClosedWorkflowIds: (state) => {
     return state.workflows

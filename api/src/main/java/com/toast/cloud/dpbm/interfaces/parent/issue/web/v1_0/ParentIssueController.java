@@ -26,4 +26,10 @@ public class ParentIssueController {
         parentIssueAppService.modify(request.getParentIssueDTO());
     }
 
+    @CrossOrigin("https://nhnent.dooray.com")
+    @DeleteMapping("/dpbm/parent-issue/{parentIssueId}/issue")
+    public void deleteChildIssue(@PathVariable("parentIssueId") String parentIssueId) {
+        parentIssueAppService.deleteChildIssue(parentIssueId);
+    }
+
 }

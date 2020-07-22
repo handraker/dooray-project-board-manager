@@ -4,6 +4,12 @@ import { DPBM_HOST } from '@/common/constant';
 import { map } from 'rxjs/operators';
 
 class ParentIssueService {
+  deleteChildIssue$({ parentIssueId }) {
+    return rxios
+      .delete(`${DPBM_HOST}/dpbm/parent-issue/${parentIssueId}/issue`)
+      .pipe(map((response) => response.data));
+  }
+
   create$({
     parentIssueId,
     projectId,

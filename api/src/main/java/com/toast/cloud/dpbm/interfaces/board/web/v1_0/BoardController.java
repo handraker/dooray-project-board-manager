@@ -22,14 +22,14 @@ public class BoardController {
     @GetMapping("/dpbm/projects/{projectId}/boards/parent-issue")
     public ParentIssueBoard getParentIssueBoard(@PathVariable("projectId") String projectId,
                                                 @Valid @ModelAttribute GetParentIssueBoardRequest request) {
-        return parentIssueBoardAppService.getParentIssueBoard(projectId, request.getModuleId());
+        return parentIssueBoardAppService.getParentIssueBoard(projectId, request.getMilestoneId(), request.getModuleId());
     }
 
     @CrossOrigin("https://nhnent.dooray.com")
     @GetMapping("/dpbm/projects/{projectId}/boards/milestone")
     public MilestoneBoard getMilestoneBoard(@PathVariable("projectId") String projectId,
                                             @Valid @ModelAttribute GetMilestoneBoardRequest request) {
-        return milestoneBoardAppService.getMilestoneBoard(projectId, request.getModuleId());
+        return milestoneBoardAppService.getMilestoneBoard(projectId, request.getMilestoneId(), request.getModuleId());
     }
 
 }

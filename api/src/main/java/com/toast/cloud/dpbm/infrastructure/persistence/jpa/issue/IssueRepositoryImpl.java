@@ -20,9 +20,18 @@ public class IssueRepositoryImpl extends QuerydslRepositorySupport implements Is
     }
 
     @Override
+    public void deleteByParentIssue(String parentIssueId) {
+        QIssue issue = QIssue.issue;
+
+        delete(issue)
+            .where(issue.parentIssueId.eq(parentIssueId))
+            .execute();
+    }
+
+    @Override
     public IssueWorkflowStatistics getMandaysIssueWorkflowStatistics(Predicate predicate) {
         QIssue issue = QIssue.issue;
-        
+
         List<IssueWorkflowStatisticsItem> items = from(issue)
             .select(Projections.constructor(IssueWorkflowStatisticsItem.class,
                                             issue.workflowId,

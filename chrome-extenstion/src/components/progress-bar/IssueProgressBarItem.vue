@@ -11,7 +11,7 @@
     aria-valuemin="0"
     aria-valuemax="100"
   >
-    {{ value }}{{ postfix }}
+    <a @click.prevent="click">{{ value }}{{ postfix }}</a>
   </div>
 </template>
 
@@ -38,6 +38,7 @@ export default {
     },
   },
   computed: {
+    ...mapState('project', ['projectId']),
     ...mapState('dooray', ['workflows']),
     workflow() {
       return this.workflows.find((workflow) => this.workflowId === workflow.id);
@@ -71,7 +72,18 @@ export default {
       }
     },
   },
+  methods: {
+    click() {
+      this.$emit('workflowClick', this.workflowId);
+    },
+  },
 };
 </script>
 
 <style scoped src="bootstrap/dist/css/bootstrap.min.css"></style>
+
+<style scoped>
+.progress-bar a {
+  color: inherit;
+}
+</style>

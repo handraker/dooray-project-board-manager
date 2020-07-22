@@ -22,9 +22,10 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import { tap, mergeMap } from 'rxjs/operators';
+import { tap, mergeMap, toArray } from 'rxjs/operators';
 
 import { doorayService } from '@/service/dooray-service';
+import { issueService } from '@/service/issue-service';
 import { parentIssueService } from '@/service/parent-issue-service';
 
 export default {
@@ -36,7 +37,7 @@ export default {
   },
   computed: {
     ...mapState('project', ['projectId']),
-    ...mapGetters('project', ['getModuleId']),
+    ...mapGetters('project', ['getModuleId', 'getWorkingTypeId', 'getMandays']),
     ...mapGetters('dooray', ['getNotClosedWorkflowIds']),
     progress() {
       if (this.importedCount == 0 || this.totalCount == 0) {
@@ -62,21 +63,53 @@ export default {
         .pipe(
           tap((response) => (this.totalCount = response.result.totalCount)),
           mergeMap((response) => response.result.contents),
-          tap((content) => console.log(content)),
           mergeMap((content) =>
-            parentIssueService.create$({
-              parentIssueId: content.id,
-              projectId: this.projectId,
-              title: content.subject,
-              moduleId: this.getModuleId(content.tagIdList),
-              devStatusCode: 'WAITING',
-              devStartDate: null,
-              devEndDate: null,
-              deployStatusCode: 'WAITING',
-              deployStartDate: null,
-              deployEndDate: null,
-              milestoneId: content.milestoneId,
-            })
+            parentIssueService
+              .create$({
+                parentIssueId: content.id,
+                projectId: this.projectId,
+                title: content.subject,
+                moduleId: this.getModuleId(content.tagIdList),
+                devStatusCode: 'WAITING',
+                devStartDate: null,
+                devEndDate: null,
+                deployStatusCode: 'WAITING',
+                deployStartDate: null,
+                deployEndDate: null,
+                milestoneId: content.milestoneId,
+              })
+              .pipe(
+                mergeMap(() =>
+                  parentIssueService.deleteChildIssue$({
+                    parentIssueId: content.id,
+                  })
+                ),
+                mergeMap(() =>
+                  doorayService.getChildIssue$({ parentIssueId: content.id })
+                ),
+                mergeMap((response) => response.result.contents),
+                mergeMap((issueContent) => {
+                  let moduleId = this.getModuleId(issueContent.tagIdList);
+                  if (moduleId == null) {
+                    moduleId = this.getModuleId(content.tagIdList);
+                  }
+                  return issueService.create$({
+                    issueId: issueContent.id,
+                    parentIssueId: issueContent.parent.id,
+                    projectId: this.projectId,
+                    title: issueContent.subject,
+                    moduleId,
+                    workingTypeId: this.getWorkingTypeId(
+                      issueContent.tagIdList
+                    ),
+                    mandays: this.getMandays(issueContent.tagIdList),
+                    workflowId: issueContent.workflowId,
+                    workflowTypeCode: issueContent.workflowClass.toUpperCase(),
+                    milestoneId: issueContent.milestoneId,
+                  });
+                }),
+                toArray()
+              )
           ),
           tap(() => (this.importedCount += 1))
         )

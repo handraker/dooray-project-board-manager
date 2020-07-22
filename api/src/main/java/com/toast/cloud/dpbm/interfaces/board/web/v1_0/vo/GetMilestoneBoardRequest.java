@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 public class GetMilestoneBoardRequest {
 
     @NotNull
+    private String milestoneId;
     private String moduleId;
 
 }

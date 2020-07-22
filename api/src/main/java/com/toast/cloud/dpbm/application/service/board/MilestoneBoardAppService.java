@@ -12,14 +12,16 @@ public class MilestoneBoardAppService {
 
     private final IssueRepository issueRepository;
 
-    public MilestoneBoard getMilestoneBoard(String projectId, String milestoneId) {
+    public MilestoneBoard getMilestoneBoard(String projectId, String milestoneId, String moduleId) {
         return new MilestoneBoard(issueRepository.getMandaysIssueWorkflowStatistics(IssuePredicate.builder()
                                                                                         .milestoneId(milestoneId)
                                                                                         .projectId(projectId)
+                                                                                        .moduleId(moduleId)
                                                                                         .build()),
                                   issueRepository.getCountIssueWorkflowStatistics(IssuePredicate.builder()
                                                                                       .milestoneId(milestoneId)
                                                                                       .projectId(projectId)
+                                                                                      .moduleId(moduleId)
                                                                                       .build()));
     }
 

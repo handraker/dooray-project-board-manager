@@ -12,6 +12,60 @@
   font-weight: bold;
 }
 
+.board .milestone-board {
+  margin-top: 20px;
+}
+
+.board .milestone-board .content {
+  background-color: white;
+}
+
+.board .module-board {
+  margin-top: 32px;
+  position: relative;
+}
+
+.board .module-board .btn-area {
+  position: absolute;
+  top: -22px;
+  right: 0;
+}
+
+.board .module-board .btn-area .progress {
+  margin-bottom: 2px !important;
+}
+
+.board .module-board td.dev-status-cell,
+.board .module-board td.deploy-status-cell {
+  text-align: center;
+  font-weight: bold;
+}
+
+.board .module-board td.dev-status-cell.WAITING {
+  background-color: #ecf0f1;
+}
+
+.board .module-board td.dev-status-cell.WORKING {
+  background-color: #f1c40f;
+}
+
+.board .module-board td.dev-status-cell.DONE {
+  background-color: #2ecc71;
+}
+
+.board .module-board td.deploy-status-cell.WAITING {
+  background-color: #ecf0f1;
+}
+
+.board .module-board td.deploy-status-cell.WORKING {
+  color: white;
+  background-color: #e74c3c;
+}
+
+.board .module-board td.deploy-status-cell.DONE {
+  background-color: #2ecc71;
+}
+
 .board .table td {
   vertical-align: middle;
 }

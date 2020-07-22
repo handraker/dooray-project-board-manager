@@ -1,27 +1,344 @@
 <template>
   <div>
-    <parent-issue-module-board
-      v-for="module in modules"
-      :key="module.id"
-      :module-id="module.id"
-    />
+    <div
+      class="module-board"
+      :style="{ 'border-bottom': `3px solid ${moduleColor}` }"
+    >
+      <h4 :style="{ color: moduleColor }">
+        {{ moduleName }}
+      </h4>
+      <div class="btn-area">
+        <div class="progress">
+          <div
+            class="progress-bar"
+            role="progressbar"
+            :style="{ width: `${progress}%` }"
+            :aria-valuenow="importedCount"
+            aria-valuemin="0"
+            :aria-valuemax="totalCount"
+          ></div>
+          <div class="progress-bar-title">{{ progress }}%</div>
+        </div>
+        <button
+          :disabled="selectedItems.length === 0"
+          class="btn btn-sm btn-primary mr-1"
+          @click="importChildIssues"
+        >
+          하위 업무 불러오기
+        </button>
+        <button
+          :disabled="selectedItems.length === 0"
+          class="btn btn-sm btn-danger"
+        >
+          삭제
+        </button>
+      </div>
+    </div>
+    <table class="table">
+      <colgroup>
+        <col :style="{ width: '20px', 'background-color': moduleColor }" />
+        <col />
+        <col style="width: 230px;" />
+        <col style="width: 100px;" />
+        <col style="width: 230px;" />
+        <col style="width: 75px;" />
+        <col style="width: 110px;" />
+        <col style="width: 230px;" />
+        <col style="width: 150px;" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th scope="col">
+            <input type="checkbox" @click="selectAll($event)" />
+          </th>
+          <th scope="col">상위 업무</th>
+          <th scope="col" class="text-center">하위 업무</th>
+          <th scope="col" class="text-center">개발 상태</th>
+          <th scope="col" class="text-center">개발 기한</th>
+          <th scope="col" class="text-right">남은 작업일</th>
+          <th scope="col" class="text-center">배포 상태</th>
+          <th scope="col" class="text-center">배포 기한</th>
+          <th scope="col">마일스톤</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="boardItem in boardItems" :key="boardItem.id">
+          <th scope="row" class="align-middle">
+            <input v-model="selectedItems" type="checkbox" :value="boardItem" />
+          </th>
+          <td>
+            <a
+              :href="`/project/${projectId}/${boardItem.parentIssue.parentIssueId}`"
+              >{{ boardItem.parentIssue.title }}</a
+            >
+          </td>
+          <td>
+            <issue-progress-bar
+              :total-value="boardItem.mandayStatistics.totalValue"
+              :items="boardItem.mandayStatistics.items"
+              postfix="MD"
+              @workflowClick="searchIssue($event, boardItem)"
+            />
+            <div class="mt-1" />
+            <issue-progress-bar
+              :total-value="boardItem.countStatistics.totalValue"
+              :items="boardItem.countStatistics.items"
+              postfix="개"
+              @workflowClick="searchIssue($event, boardItem)"
+            />
+          </td>
+          <dev-status-box
+            :status="boardItem.parentIssue.devStatusCode"
+            @change="changeDevStatusCode($event, boardItem.parentIssue)"
+          />
+          <td>
+            <date-progress-bar
+              :from="boardItem.devDateProgress.from"
+              :to="boardItem.devDateProgress.to"
+              :total-working-days="boardItem.devDateProgress.totalWorkingDays"
+              :remaining-working-days="
+                boardItem.devDateProgress.remainingWorkingDays
+              "
+              @change="changeDevDate($event, boardItem.parentIssue)"
+            />
+          </td>
+          <td class="text-right">
+            {{ boardItem.devDateProgress.remainingWorkingDays }}일
+          </td>
+          <deploy-status-box
+            :status="boardItem.parentIssue.deployStatusCode"
+            @change="changeDeployStatusCode($event, boardItem.parentIssue)"
+          />
+          <td>
+            <date-progress-bar
+              :from="boardItem.deployDateProgress.from"
+              :to="boardItem.deployDateProgress.to"
+              :total-working-days="
+                boardItem.deployDateProgress.totalWorkingDays
+              "
+              :remaining-working-days="
+                boardItem.deployDateProgress.remainingWorkingDays
+              "
+              @change="changeDeployDate($event, boardItem.parentIssue)"
+            />
+          </td>
+          <td>{{ getMilestone(boardItem.parentIssue.milestoneId).name }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td style="background-color: white;"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="text-right">{{ totalDevRemainingWorkingDays }}일</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import qs from 'qs';
+import { from } from 'rxjs';
+import { map, mergeMap, toArray } from 'rxjs/operators';
+import { mapState, mapGetters } from 'vuex';
+import { reduce } from 'lodash-es';
 
-import ParentIssueModuleBoard from '@/components/board/ParentIssueModuleBoard.vue';
+import { boardService } from '@/service/board-service';
+import { doorayService } from '@/service/dooray-service';
+import { issueService } from '@/service/issue-service';
+import { parentIssueService } from '@/service/parent-issue-service';
+import DateProgressBar from '@/components/progress-bar/DateProgressBar.vue';
+import IssueProgressBar from '@/components/progress-bar/IssueProgressBar.vue';
+import DevStatusBox from '@/components/status/DevStatusBox.vue';
+import DeployStatusBox from '@/components/status/DeployStatusBox.vue';
 
 export default {
-  components: { ParentIssueModuleBoard },
-  computed: {
-    ...mapState('project', ['projectId', 'modules']),
+  components: {
+    DateProgressBar,
+    IssueProgressBar,
+    DevStatusBox,
+    DeployStatusBox,
   },
-  methods: {},
+  props: {
+    moduleId: {
+      required: true,
+      type: String,
+    },
+  },
+  data() {
+    return {
+      selectedItems: [],
+      boardItems: [],
+      importedCount: 0,
+      totalCount: 0,
+    };
+  },
+  computed: {
+    ...mapState('project', ['projectId']),
+    ...mapGetters('project', [
+      'getModule',
+      'getModuleId',
+      'getWorkingTypeId',
+      'getMandays',
+    ]),
+    ...mapState('dooray', ['tags', 'milestones']),
+    ...mapGetters('dooray', ['getMilestone']),
+    progress() {
+      if (this.importedCount == 0 || this.totalCount == 0) {
+        return 0;
+      }
+
+      return Math.round((this.importedCount / this.totalCount) * 100);
+    },
+    moduleColor() {
+      return `#${this.getModule(this.moduleId).color}`;
+    },
+    moduleName() {
+      const name = this.getModule(this.moduleId).name;
+      const idx = name.lastIndexOf(':');
+      return name.substr(idx + 1).trim();
+    },
+    totalDevRemainingWorkingDays() {
+      return reduce(
+        this.boardItems,
+        (sum, item) => sum + item.devDateProgress.remainingWorkingDays,
+        0
+      );
+    },
+  },
+  watch: {
+    projectId: {
+      immediate: true,
+      handler(projectId) {
+        if (projectId === '') {
+          return;
+        }
+
+        this.getParentIssueBoard();
+      },
+    },
+  },
+  methods: {
+    searchIssue(workflowId, boardItem) {
+      const params = qs.stringify(
+        {
+          workflowIds: [workflowId],
+          tags: ['and', boardItem.parentIssue.moduleId],
+          milestone: boardItem.parentIssue.milestoneId,
+          hasParent: true,
+        },
+        { arrayFormat: 'comma' }
+      );
+      history.pushState(null, null, `/project/${this.projectId}?${params}`);
+      document
+        .querySelector(
+          '#main-wrapper > section > section > section > project-contents-layout > project-contents-header > div > project-contents-type-selector > div > button:nth-child(3)'
+        )
+        .click();
+    },
+    importChildIssues() {
+      this.importedCount = 0;
+      this.totalCount = 0;
+
+      from(this.selectedItems)
+        .pipe(
+          map((item) => item.parentIssue.parentIssueId),
+          mergeMap((parentIssueId) =>
+            parentIssueService
+              .deleteChildIssue$({ parentIssueId })
+              .pipe(map(() => parentIssueId))
+          ),
+          mergeMap((parentIssueId) =>
+            doorayService.getChildIssue$({ parentIssueId })
+          ),
+          mergeMap((response) => response.result.contents),
+          toArray(),
+          mergeMap((contents) => {
+            this.totalCount = contents.length;
+            return contents;
+          }),
+          mergeMap((content) => {
+            let moduleId = this.getModuleId(content.tagIdList);
+            if (moduleId == null) {
+              moduleId = this.moduleId;
+            }
+            return issueService.create$({
+              issueId: content.id,
+              parentIssueId: content.parent.id,
+              projectId: this.projectId,
+              title: content.subject,
+              moduleId,
+              workingTypeId: this.getWorkingTypeId(content.tagIdList),
+              mandays: this.getMandays(content.tagIdList),
+              workflowId: content.workflowId,
+              workflowTypeCode: content.workflowClass.toUpperCase(),
+              milestoneId: content.milestoneId,
+            });
+          })
+        )
+        .subscribe({
+          next: () => this.importedCount++,
+          complete: () => this.getParentIssueBoard(),
+          error: () => this.getParentIssueBoard(),
+        });
+    },
+    selectAll(event) {
+      if (event.target.checked) {
+        this.selectedItems = [...this.boardItems];
+      } else {
+        this.selectedItems = [];
+      }
+    },
+    getParentIssueBoard() {
+      boardService
+        .getParentIssueBoard$({
+          projectId: this.projectId,
+          moduleId: this.moduleId,
+        })
+        .subscribe((response) => (this.boardItems = response.items));
+    },
+    changeDevStatusCode(devStatusCode, parentIssue) {
+      parentIssueService
+        .modify$({
+          ...parentIssue,
+          devStatusCode,
+        })
+        .subscribe(() => this.getParentIssueBoard());
+    },
+    changeDeployStatusCode(deployStatusCode, parentIssue) {
+      parentIssueService
+        .modify$({
+          ...parentIssue,
+          deployStatusCode,
+        })
+        .subscribe(() => this.getParentIssueBoard());
+    },
+    changeDevDate(date, parentIssue) {
+      parentIssueService
+        .modify$({
+          ...parentIssue,
+          devStartDate: date.from,
+          devEndDate: date.to,
+        })
+        .subscribe(() => this.getParentIssueBoard());
+    },
+    changeDeployDate(date, parentIssue) {
+      parentIssueService
+        .modify$({
+          ...parentIssue,
+          deployStartDate: date.from,
+          deployEndDate: date.to,
+        })
+        .subscribe(() => this.getParentIssueBoard());
+    },
+  },
 };
 </script>
-
-<style></style>
 
 <style scoped src="bootstrap/dist/css/bootstrap.min.css"></style>

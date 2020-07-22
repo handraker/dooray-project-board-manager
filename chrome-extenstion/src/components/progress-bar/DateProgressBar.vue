@@ -64,6 +64,11 @@ export default {
       required: true,
       type: Number,
     },
+    disabled: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -107,6 +112,9 @@ export default {
   },
   methods: {
     edit() {
+      if (this.disabled) {
+        return;
+      }
       this.isEditMode = true;
     },
     apply() {

@@ -122,6 +122,8 @@ import qs from 'qs';
 import moment from 'moment';
 import { mapState, mapGetters } from 'vuex';
 import { reduce } from 'lodash-es';
+import { from } from 'rxjs';
+import { mergeMap, toArray } from 'rxjs/operators';
 
 import { getContrast, getWorkingDays } from '@/common/utils';
 import { boardService } from '@/service/board-service';
@@ -153,7 +155,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('project', ['projectId']),
+    ...mapState('project', ['projectId', 'modules']),
     ...mapGetters('project', [
       'getModule',
       'getModuleId',
@@ -240,12 +242,19 @@ export default {
         .click();
     },
     getParentIssueBoard() {
-      boardService
-        .getParentIssueBoard$({
-          projectId: this.projectId,
-          milestoneId: this.milestone.id,
-        })
-        .subscribe((response) => (this.boardItems = response.items));
+      from(this.modules)
+        .pipe(
+          mergeMap((module) =>
+            boardService.getParentIssueBoard$({
+              projectId: this.projectId,
+              milestoneId: this.milestone.id,
+              moduleId: module.id,
+            })
+          ),
+          mergeMap((response) => response.items),
+          toArray()
+        )
+        .subscribe((items) => (this.boardItems = items));
     },
     changeDevStatusCode(devStatusCode, parentIssue) {
       parentIssueService

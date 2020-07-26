@@ -14,5 +14,6 @@ public class Project extends AbstractBaseEntity<String> {
     private String doorayModuleTagPrefixId;
     private String doorayWorkingTypeTagPrefixId;
     private String doorayMandaysTagPrefixId;
+    private String department;
 
 }

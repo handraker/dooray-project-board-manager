@@ -4,30 +4,23 @@ import { DPBM_HOST } from '@/common/constant';
 import { map } from 'rxjs/operators';
 
 class IssueService {
-  create$({
-    issueId,
-    parentIssueId,
-    projectId,
-    title,
-    moduleId,
-    workingTypeId,
-    mandays,
-    workflowId,
-    workflowTypeCode,
-    milestoneId,
-  }) {
+  getIssues$({ memberId, workflowTypeCode, from, to }) {
+    return rxios
+      .get(`${DPBM_HOST}/dpbm/issue`, {
+        params: {
+          memberId,
+          workflowTypeCode,
+          from,
+          to,
+        },
+      })
+      .pipe(map((response) => response.data));
+  }
+
+  create$(issueList) {
     return rxios
       .post(`${DPBM_HOST}/dpbm/issue`, {
-        issueId,
-        parentIssueId,
-        projectId,
-        title,
-        moduleId,
-        workingTypeId,
-        mandays,
-        workflowId,
-        workflowTypeCode,
-        milestoneId,
+        issueList,
       })
       .pipe(map((response) => response.data));
   }

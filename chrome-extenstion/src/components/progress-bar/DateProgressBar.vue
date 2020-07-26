@@ -106,9 +106,19 @@ export default {
       return moment(this.fromDate).isSameOrBefore(moment(this.toDate));
     },
   },
-  created() {
-    this.fromDate = this.from;
-    this.toDate = this.to;
+  watch: {
+    from: {
+      immediate: true,
+      handler() {
+        this.fromDate = this.from;
+      },
+    },
+    to: {
+      immediate: true,
+      handler() {
+        this.toDate = this.to;
+      },
+    },
   },
   methods: {
     edit() {

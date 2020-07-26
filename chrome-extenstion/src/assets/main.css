@@ -12,6 +12,10 @@
   font-weight: bold;
 }
 
+.board .member-board {
+  margin-top: 20px;
+}
+
 .board .milestone-board {
   margin-top: 20px;
 }
@@ -27,7 +31,7 @@
 
 .board .module-board .btn-area {
   position: absolute;
-  top: -22px;
+  top: 0;
   right: 0;
 }
 

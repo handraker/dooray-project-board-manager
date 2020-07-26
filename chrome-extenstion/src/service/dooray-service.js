@@ -9,6 +9,12 @@ class DoorayService {
       .pipe(map((response) => response.data));
   }
 
+  getMembers$({ projectId }) {
+    return rxios
+      .get(`/v2/wapi/projects/!${projectId}/members?size=10000`, {})
+      .pipe(map((response) => response.data));
+  }
+
   getWorkflows$({ projectId }) {
     return rxios
       .get(`/v2/wapi/projects/!${projectId}/workflows?size=10000`, {})

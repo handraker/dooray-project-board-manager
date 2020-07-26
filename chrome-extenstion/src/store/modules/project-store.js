@@ -9,6 +9,7 @@ const getDefaultState = () => {
     doorayModuleTagPrefixId: '',
     doorayWorkingTypeTagPrefixId: '',
     doorayMandaysTagPrefixId: '',
+    department: '',
     modules: [],
   };
 };
@@ -23,12 +24,14 @@ const mutations = {
       doorayModuleTagPrefixId,
       doorayWorkingTypeTagPrefixId,
       doorayMandaysTagPrefixId,
+      department,
     }
   ) {
     state.projectId = projectId;
     state.doorayModuleTagPrefixId = doorayModuleTagPrefixId;
     state.doorayWorkingTypeTagPrefixId = doorayWorkingTypeTagPrefixId;
     state.doorayMandaysTagPrefixId = doorayMandaysTagPrefixId;
+    state.department = department;
   },
   setModules(state, { tags }) {
     from(tags)
@@ -37,7 +40,6 @@ const mutations = {
         toArray()
       )
       .subscribe((tags) => (state.modules = tags));
-    console.log(state);
   },
 };
 
@@ -95,6 +97,38 @@ const getters = {
     } else {
       return mandays;
     }
+  },
+  projectMembers: (state, getters, rootState) => {
+    let projectMembers = rootState.dooray.members.filter(
+      (member) => member.department === state.department
+    );
+
+    function getOrder(member) {
+      switch (member.position) {
+        case '책임':
+          return 10;
+        case '선임':
+          return 100;
+        case '전임':
+          return 1000;
+        case '사원':
+        default:
+          return 10000;
+      }
+    }
+
+    projectMembers.sort((l, r) => {
+      const lo = getOrder(l);
+      const ro = getOrder(r);
+
+      if (lo == ro) {
+        return l.idProviderUserId - r.idProviderUserId;
+      } else {
+        return lo - ro;
+      }
+    });
+
+    return projectMembers;
   },
 };
 

@@ -4,6 +4,7 @@ import App from './App.vue';
 import store from '@/store';
 import '@/config/axios';
 import '@/config/bootstrap';
+import '@/config/plugins';
 import '@/assets/main.css';
 
 Vue.config.productionTip = false;
@@ -16,7 +17,7 @@ let section = null;
 let divider = null;
 let button = null;
 
-setInterval(() => {
+const intervalId = setInterval(() => {
   topHeaderDiv = document.querySelector(
     '#main-wrapper > section > section > section > project-contents-layout > project-contents-header > div > project-contents-type-selector > div'
   );
@@ -37,6 +38,8 @@ setInterval(() => {
     if (document.getElementById('dooray-project-board-manager')) {
       return;
     }
+
+    clearInterval(intervalId);
     section = document.createElement('section');
     section.id = 'dooray-project-board-manager';
     section.className = 'main-contents-body layout-row';

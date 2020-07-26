@@ -8,24 +8,6 @@
         {{ moduleName }}
       </h4>
       <div class="btn-area">
-        <div class="progress">
-          <div
-            class="progress-bar"
-            role="progressbar"
-            :style="{ width: `${progress}%` }"
-            :aria-valuenow="importedCount"
-            aria-valuemin="0"
-            :aria-valuemax="totalCount"
-          ></div>
-          <div class="progress-bar-title">{{ progress }}%</div>
-        </div>
-        <button
-          :disabled="selectedItems.length === 0"
-          class="btn btn-sm btn-primary mr-1"
-          @click="importChildIssues"
-        >
-          하위 업무 불러오기
-        </button>
         <button
           :disabled="selectedItems.length === 0"
           class="btn btn-sm btn-danger"
@@ -144,14 +126,10 @@
 
 <script>
 import qs from 'qs';
-import { from } from 'rxjs';
-import { map, mergeMap, toArray } from 'rxjs/operators';
 import { mapState, mapGetters } from 'vuex';
 import { reduce } from 'lodash-es';
 
 import { boardService } from '@/service/board-service';
-import { doorayService } from '@/service/dooray-service';
-import { issueService } from '@/service/issue-service';
 import { parentIssueService } from '@/service/parent-issue-service';
 import DateProgressBar from '@/components/progress-bar/DateProgressBar.vue';
 import IssueProgressBar from '@/components/progress-bar/IssueProgressBar.vue';
@@ -242,51 +220,13 @@ export default {
         )
         .click();
     },
-    importChildIssues() {
-      this.importedCount = 0;
-      this.totalCount = 0;
-
-      from(this.selectedItems)
-        .pipe(
-          map((item) => item.parentIssue.parentIssueId),
-          mergeMap((parentIssueId) =>
-            parentIssueService
-              .deleteChildIssue$({ parentIssueId })
-              .pipe(map(() => parentIssueId))
-          ),
-          mergeMap((parentIssueId) =>
-            doorayService.getChildIssue$({ parentIssueId })
-          ),
-          mergeMap((response) => response.result.contents),
-          toArray(),
-          mergeMap((contents) => {
-            this.totalCount = contents.length;
-            return contents;
-          }),
-          mergeMap((content) => {
-            let moduleId = this.getModuleId(content.tagIdList);
-            if (moduleId == null) {
-              moduleId = this.moduleId;
-            }
-            return issueService.create$({
-              issueId: content.id,
-              parentIssueId: content.parent.id,
-              projectId: this.projectId,
-              title: content.subject,
-              moduleId,
-              workingTypeId: this.getWorkingTypeId(content.tagIdList),
-              mandays: this.getMandays(content.tagIdList),
-              workflowId: content.workflowId,
-              workflowTypeCode: content.workflowClass.toUpperCase(),
-              milestoneId: content.milestoneId,
-            });
-          })
-        )
-        .subscribe({
-          next: () => this.importedCount++,
-          complete: () => this.getParentIssueBoard(),
-          error: () => this.getParentIssueBoard(),
-        });
+    getMemberId(users) {
+      const members = users.to.filter((to) => to.type === 'member');
+      if (members.length > 0) {
+        return members[0].member.organizationMemberId;
+      } else {
+        return null;
+      }
     },
     selectAll(event) {
       if (event.target.checked) {

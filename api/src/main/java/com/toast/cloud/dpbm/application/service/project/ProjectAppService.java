@@ -14,7 +14,7 @@ public class ProjectAppService {
     public ProjectDTO getProject(String projectId) {
         return projectRepository.findById(projectId)
             .map(ProjectDTO::new)
-            .orElseThrow();
+            .orElseGet(() -> new ProjectDTO(projectId));
     }
 
 }

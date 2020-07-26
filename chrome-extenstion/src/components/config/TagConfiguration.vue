@@ -67,6 +67,6 @@ export default {
 }
 
 .tag-badge {
-  margin: 0 2px 2px 0;
+  margin: 4px 4px 0 0;
 }
 </style>

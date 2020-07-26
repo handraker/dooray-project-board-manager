@@ -2,6 +2,7 @@ import moment from 'moment';
 import { from } from 'rxjs';
 import { map, reduce } from 'rxjs/operators';
 
+import { getContrast } from '@/common/utils';
 import { doorayService } from '@/service/dooray-service';
 
 const getDefaultState = () => {
@@ -10,6 +11,7 @@ const getDefaultState = () => {
     tagPrefixs: {},
     workflows: {},
     milestones: [],
+    members: [],
   };
 };
 
@@ -37,15 +39,26 @@ const mutations = {
   },
   setWorkflows(state, { workflows }) {
     state.workflows = workflows;
-    console.log(state);
   },
   setMilestones(state, { milestones }) {
     state.milestones = milestones;
-    console.log(state);
+  },
+  setMembers(state, { members, organizationMemberMap }) {
+    state.members = members.map(
+      (member) => organizationMemberMap[member.organizationMemberId]
+    );
   },
 };
 
 const getters = {
+  getTagStyle: (state) => (tagId) => {
+    const tag = state.tags[tagId];
+    return {
+      'background-color': `#${tag.color}`,
+      'border-color': `#${tag.color}`,
+      color: getContrast(tag.color),
+    };
+  },
   filteredMilestone: (state) => {
     let milestones = state.milestones.filter(
       (milestone) => milestone.status == 'open'
@@ -111,6 +124,17 @@ const actions = {
       .subscribe((response) =>
         commit('setMilestones', {
           milestones: response.result.contents,
+        })
+      );
+  },
+  getMembers({ rootState, commit }) {
+    doorayService
+      .getMembers$({ projectId: rootState.project.projectId })
+      .subscribe((response) =>
+        commit('setMembers', {
+          members: response.result.contents,
+          organizationMemberMap:
+            response.result.references.organizationMemberMap,
         })
       );
   },

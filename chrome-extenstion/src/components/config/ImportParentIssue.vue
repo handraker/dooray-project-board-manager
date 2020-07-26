@@ -22,7 +22,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import { tap, mergeMap, toArray } from 'rxjs/operators';
+import { map, tap, mergeMap, toArray } from 'rxjs/operators';
 
 import { doorayService } from '@/service/dooray-service';
 import { issueService } from '@/service/issue-service';
@@ -48,6 +48,14 @@ export default {
     },
   },
   methods: {
+    getMemberId(users) {
+      const members = users.to.filter((to) => to.type === 'member');
+      if (members.length > 0) {
+        return members[0].member.organizationMemberId;
+      } else {
+        return null;
+      }
+    },
     importParentIssue(page) {
       if (page === 0) {
         this.totalCount = 0;
@@ -88,16 +96,17 @@ export default {
                   doorayService.getChildIssue$({ parentIssueId: content.id })
                 ),
                 mergeMap((response) => response.result.contents),
-                mergeMap((issueContent) => {
+                map((issueContent) => {
                   let moduleId = this.getModuleId(issueContent.tagIdList);
                   if (moduleId == null) {
                     moduleId = this.getModuleId(content.tagIdList);
                   }
-                  return issueService.create$({
+                  return {
                     issueId: issueContent.id,
                     parentIssueId: issueContent.parent.id,
                     projectId: this.projectId,
                     title: issueContent.subject,
+                    memberId: this.getMemberId(issueContent.users),
                     moduleId,
                     workingTypeId: this.getWorkingTypeId(
                       issueContent.tagIdList
@@ -106,9 +115,12 @@ export default {
                     workflowId: issueContent.workflowId,
                     workflowTypeCode: issueContent.workflowClass.toUpperCase(),
                     milestoneId: issueContent.milestoneId,
-                  });
+                    tagIdList: issueContent.tagIdList,
+                    updatedAt: issueContent.updatedAt,
+                  };
                 }),
-                toArray()
+                toArray(),
+                mergeMap((issueList) => issueService.create$(issueList))
               )
           ),
           tap(() => (this.importedCount += 1))

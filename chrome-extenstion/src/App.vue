@@ -20,6 +20,7 @@
 <script>
 import { mapActions } from 'vuex';
 
+import MemberBoardMain from '@/components/board/MemberBoardMain.vue';
 import MilestoneBoardMain from '@/components/board/MilestoneBoardMain.vue';
 import MilestoneParentIssueBoardMain from '@/components/board/MilestoneParentIssueBoardMain.vue';
 import ParentIssueBoardMain from '@/components/board/ParentIssueBoardMain.vue';
@@ -31,12 +32,16 @@ export default {
       selectedTabIdx: 0,
       tabs: [
         {
-          title: 'Parent Issue Board',
-          component: ParentIssueBoardMain,
+          title: 'Member Board',
+          component: MemberBoardMain,
         },
         {
           title: 'Mileston Parent Issue Board',
           component: MilestoneParentIssueBoardMain,
+        },
+        {
+          title: 'Parent Issue Board',
+          component: ParentIssueBoardMain,
         },
         {
           title: 'Milestone Board',
@@ -48,6 +53,8 @@ export default {
         },
       ],
       tabContentHeight: 0,
+      projectId: '',
+      intervalId: null,
     };
   },
   computed: {
@@ -55,18 +62,40 @@ export default {
       return this.tabs[this.selectedTabIdx];
     },
   },
-  async mounted() {
-    const pathname = window.location.pathname;
-    const lastIndex = pathname.lastIndexOf('/project/');
-    const projectId = pathname.substr(lastIndex + 9, 19);
-    await this.getProject(projectId);
+  watch: {
+    projectId: {
+      immediate: true,
+      async handler(projectId) {
+        if (projectId === '') {
+          return;
+        }
 
-    this.getTags();
-    this.getWorkflows();
-    this.getMilestones();
+        await this.getProject(projectId);
+
+        this.getTags();
+        this.getWorkflows();
+        this.getMilestones();
+        this.getMembers();
+      },
+    },
+  },
+  created() {
+    this.intervalId = setInterval(() => {
+      const pathname = window.location.pathname;
+      const lastIndex = pathname.lastIndexOf('/project/');
+      this.projectId = pathname.substr(lastIndex + 9, 19);
+    }, 1000);
+  },
+  destroyed() {
+    clearInterval(this.intervalId);
   },
   methods: {
-    ...mapActions('dooray', ['getTags', 'getWorkflows', 'getMilestones']),
+    ...mapActions('dooray', [
+      'getTags',
+      'getWorkflows',
+      'getMilestones',
+      'getMembers',
+    ]),
     ...mapActions('project', ['getProject']),
     selectTab(idx) {
       this.selectedTabIdx = idx;

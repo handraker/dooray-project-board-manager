@@ -51,6 +51,7 @@
           <td>
             <a
               :href="`/project/${projectId}/${boardItem.parentIssue.parentIssueId}`"
+              @click="moveIssue"
               >{{ boardItem.parentIssue.title }}</a
             >
           </td>
@@ -203,6 +204,13 @@ export default {
     },
   },
   methods: {
+    moveIssue() {
+      document
+        .querySelector(
+          '#main-wrapper > section > section > section > project-contents-layout > project-contents-header > div > project-contents-type-selector > div > button:nth-child(3)'
+        )
+        .click();
+    },
     searchIssue(workflowId, boardItem) {
       const params = qs.stringify(
         {

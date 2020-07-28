@@ -20,8 +20,15 @@
   margin-top: 20px;
 }
 
-.board .milestone-board .content {
+.board .milestone-board .content,
+.board .parent-issue-board .content {
   background-color: white;
+  overflow: scroll;
+}
+
+.board .milestone-board .content .table,
+.board .parent-issue-board .content .table {
+  min-width: 1600px;
 }
 
 .board .module-board {

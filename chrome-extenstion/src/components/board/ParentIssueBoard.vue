@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="parent-issue-board">
     <div
       class="module-board"
       :style="{ 'border-bottom': `3px solid ${moduleColor}` }"
@@ -16,112 +16,118 @@
         </button>
       </div>
     </div>
-    <table class="table">
-      <colgroup>
-        <col :style="{ width: '20px', 'background-color': moduleColor }" />
-        <col />
-        <col style="width: 230px;" />
-        <col style="width: 100px;" />
-        <col style="width: 230px;" />
-        <col style="width: 75px;" />
-        <col style="width: 110px;" />
-        <col style="width: 230px;" />
-        <col style="width: 150px;" />
-      </colgroup>
-      <thead>
-        <tr>
-          <th scope="col">
-            <input type="checkbox" @click="selectAll($event)" />
-          </th>
-          <th scope="col">상위 업무</th>
-          <th scope="col" class="text-center">하위 업무</th>
-          <th scope="col" class="text-center">개발 상태</th>
-          <th scope="col" class="text-center">개발 기한</th>
-          <th scope="col" class="text-right">남은 작업일</th>
-          <th scope="col" class="text-center">배포 상태</th>
-          <th scope="col" class="text-center">배포 기한</th>
-          <th scope="col">마일스톤</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="boardItem in boardItems" :key="boardItem.id">
-          <th scope="row" class="align-middle">
-            <input v-model="selectedItems" type="checkbox" :value="boardItem" />
-          </th>
-          <td>
-            <a
-              :href="`/project/${projectId}/${boardItem.parentIssue.parentIssueId}`"
-              @click="moveIssue"
-              >{{ boardItem.parentIssue.title }}</a
-            >
-          </td>
-          <td>
-            <issue-progress-bar
-              :total-value="boardItem.mandayStatistics.totalValue"
-              :items="boardItem.mandayStatistics.items"
-              postfix="MD"
-              @workflowClick="searchIssue($event, boardItem)"
+    <div class="content">
+      <table class="table">
+        <colgroup>
+          <col :style="{ width: '20px', 'background-color': moduleColor }" />
+          <col />
+          <col style="width: 230px;" />
+          <col style="width: 100px;" />
+          <col style="width: 230px;" />
+          <col style="width: 75px;" />
+          <col style="width: 110px;" />
+          <col style="width: 230px;" />
+          <col style="width: 150px;" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th scope="col">
+              <input type="checkbox" @click="selectAll($event)" />
+            </th>
+            <th scope="col">상위 업무</th>
+            <th scope="col" class="text-center">하위 업무</th>
+            <th scope="col" class="text-center">개발 상태</th>
+            <th scope="col" class="text-center">개발 기한</th>
+            <th scope="col" class="text-right">남은 작업일</th>
+            <th scope="col" class="text-center">배포 상태</th>
+            <th scope="col" class="text-center">배포 기한</th>
+            <th scope="col">마일스톤</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="boardItem in boardItems" :key="boardItem.id">
+            <th scope="row" class="align-middle">
+              <input
+                v-model="selectedItems"
+                type="checkbox"
+                :value="boardItem"
+              />
+            </th>
+            <td>
+              <a
+                :href="`/project/${projectId}/${boardItem.parentIssue.parentIssueId}`"
+                @click="moveIssue"
+                >{{ boardItem.parentIssue.title }}</a
+              >
+            </td>
+            <td>
+              <issue-progress-bar
+                :total-value="boardItem.mandayStatistics.totalValue"
+                :items="boardItem.mandayStatistics.items"
+                postfix="MD"
+                @workflowClick="searchIssue($event, boardItem)"
+              />
+              <div class="mt-1" />
+              <issue-progress-bar
+                :total-value="boardItem.countStatistics.totalValue"
+                :items="boardItem.countStatistics.items"
+                postfix="개"
+                @workflowClick="searchIssue($event, boardItem)"
+              />
+            </td>
+            <dev-status-box
+              :status="boardItem.parentIssue.devStatusCode"
+              @change="changeDevStatusCode($event, boardItem.parentIssue)"
             />
-            <div class="mt-1" />
-            <issue-progress-bar
-              :total-value="boardItem.countStatistics.totalValue"
-              :items="boardItem.countStatistics.items"
-              postfix="개"
-              @workflowClick="searchIssue($event, boardItem)"
+            <td>
+              <date-progress-bar
+                :from="boardItem.devDateProgress.from"
+                :to="boardItem.devDateProgress.to"
+                :total-working-days="boardItem.devDateProgress.totalWorkingDays"
+                :remaining-working-days="
+                  boardItem.devDateProgress.remainingWorkingDays
+                "
+                @change="changeDevDate($event, boardItem.parentIssue)"
+              />
+            </td>
+            <td class="text-right">
+              {{ boardItem.devDateProgress.remainingWorkingDays }}일
+            </td>
+            <deploy-status-box
+              :status="boardItem.parentIssue.deployStatusCode"
+              @change="changeDeployStatusCode($event, boardItem.parentIssue)"
             />
-          </td>
-          <dev-status-box
-            :status="boardItem.parentIssue.devStatusCode"
-            @change="changeDevStatusCode($event, boardItem.parentIssue)"
-          />
-          <td>
-            <date-progress-bar
-              :from="boardItem.devDateProgress.from"
-              :to="boardItem.devDateProgress.to"
-              :total-working-days="boardItem.devDateProgress.totalWorkingDays"
-              :remaining-working-days="
-                boardItem.devDateProgress.remainingWorkingDays
-              "
-              @change="changeDevDate($event, boardItem.parentIssue)"
-            />
-          </td>
-          <td class="text-right">
-            {{ boardItem.devDateProgress.remainingWorkingDays }}일
-          </td>
-          <deploy-status-box
-            :status="boardItem.parentIssue.deployStatusCode"
-            @change="changeDeployStatusCode($event, boardItem.parentIssue)"
-          />
-          <td>
-            <date-progress-bar
-              :from="boardItem.deployDateProgress.from"
-              :to="boardItem.deployDateProgress.to"
-              :total-working-days="
-                boardItem.deployDateProgress.totalWorkingDays
-              "
-              :remaining-working-days="
-                boardItem.deployDateProgress.remainingWorkingDays
-              "
-              @change="changeDeployDate($event, boardItem.parentIssue)"
-            />
-          </td>
-          <td>{{ getMilestone(boardItem.parentIssue.milestoneId).name }}</td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td style="background-color: white;"></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td class="text-right">{{ totalDevRemainingWorkingDays }}일</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      </tfoot>
-    </table>
+            <td>
+              <date-progress-bar
+                :from="boardItem.deployDateProgress.from"
+                :to="boardItem.deployDateProgress.to"
+                :total-working-days="
+                  boardItem.deployDateProgress.totalWorkingDays
+                "
+                :remaining-working-days="
+                  boardItem.deployDateProgress.remainingWorkingDays
+                "
+                @change="changeDeployDate($event, boardItem.parentIssue)"
+              />
+            </td>
+            <td>{{ getMilestone(boardItem.parentIssue.milestoneId).name }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td style="background-color: white;"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="text-right">{{ totalDevRemainingWorkingDays }}일</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
   </div>
 </template>
 

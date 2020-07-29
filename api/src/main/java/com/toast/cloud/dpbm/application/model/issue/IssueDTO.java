@@ -41,8 +41,8 @@ public class IssueDTO {
         this.moduleId = issue.getModuleId();
         this.workingTypeId = issue.getWorkingTypeId();
         this.mandays = issue.getMandays();
-        this.workflowId = issue.getWorkflowId();
-        this.workflowTypeCode = issue.getWorkflowTypeCode();
+        this.workflowId = issue.getWorkflow().getWorkflowId();
+        this.workflowTypeCode = issue.getWorkflow().getWorkflowTypeCode();
         this.milestoneId = issue.getMilestoneId();
         this.tagIdList = issue.getIssueTagList()
             .stream()

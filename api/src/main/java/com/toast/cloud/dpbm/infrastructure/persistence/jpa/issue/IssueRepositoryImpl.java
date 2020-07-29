@@ -58,11 +58,11 @@ public class IssueRepositoryImpl extends QuerydslRepositorySupport implements Is
 
         List<IssueWorkflowStatisticsItem> items = from(issue)
             .select(Projections.constructor(IssueWorkflowStatisticsItem.class,
-                                            issue.workflowId,
-                                            issue.workflowTypeCode,
+                                            issue.workflow.workflowId,
+                                            issue.workflow.workflowTypeCode,
                                             issue.mandays.sum()))
             .where(predicate)
-            .groupBy(issue.workflowId, issue.workflowTypeCode)
+            .groupBy(issue.workflow.workflowId, issue.workflow.workflowTypeCode)
             .fetch();
         return new IssueWorkflowStatistics(items);
     }
@@ -72,9 +72,12 @@ public class IssueRepositoryImpl extends QuerydslRepositorySupport implements Is
         QIssue issue = QIssue.issue;
 
         List<IssueWorkflowStatisticsItem> items = from(issue)
-            .select(Projections.constructor(IssueWorkflowStatisticsItem.class, issue.workflowId, issue.workflowTypeCode, issue.count()))
+            .select(Projections.constructor(IssueWorkflowStatisticsItem.class,
+                                            issue.workflow.workflowId,
+                                            issue.workflow.workflowTypeCode,
+                                            issue.count()))
             .where(predicate)
-            .groupBy(issue.workflowId, issue.workflowTypeCode)
+            .groupBy(issue.workflow.workflowId, issue.workflow.workflowTypeCode)
             .fetch();
         return new IssueWorkflowStatistics(items);
     }

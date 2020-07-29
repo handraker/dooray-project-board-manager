@@ -35,7 +35,7 @@ public class IssuePredicate {
         }
 
         if (workflowTypeCode != null) {
-            where.and(issue.workflowTypeCode.eq(workflowTypeCode));
+            where.and(issue.workflow.workflowTypeCode.eq(workflowTypeCode));
         }
 
         if (StringUtils.isNotEmpty(milestoneId)) {

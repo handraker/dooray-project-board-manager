@@ -1,5 +1,5 @@
 <template>
-  <div class="member-board">
+  <div v-if="member" class="member-board">
     <div class="row profile">
       <div class="col">
         <img :src="member.profileImage.url" />
@@ -9,267 +9,54 @@
     <div v-if="viewMode === 'HORIZONTAL'">
       <div class="row">
         <div class="col">
-          <table class="table registered">
-            <colgroup>
-              <col class="marker" />
-              <col />
-            </colgroup>
-            <thead>
-              <th class="marker"></th>
-              <th>할일</th>
-            </thead>
-            <tbody>
-              <tr v-for="issue in registeredIssueList" :key="issue.issueId">
-                <td class="marker"></td>
-                <td>
-                  <div>
-                    <a
-                      :href="`/project/${projectId}/${issue.issueId}`"
-                      @click="moveIssue"
-                      >{{ issue.title }}</a
-                    >
-                  </div>
-                  <div class="mt-1 row">
-                    <div class="col">
-                      갱신일 :
-                      {{ issue.updatedAt | moment('YYYY-MM-DD hh:mm') }}
-                    </div>
-                    <div class="col text-right">
-                      {{ getMilestone(issue.milestoneId).name }}
-                    </div>
-                  </div>
-                  <div class="mt-1 inline-box" title="태그">
-                    <span class="tag-group">
-                      <span v-for="tagId in issue.tagIdList" :key="tagId"
-                        ><span class="tag-badge" :style="getTagStyle(tagId)">{{
-                          tags[tagId].name
-                        }}</span></span
-                      >
-                    </span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <member-board-vertical-table
+            title="할일"
+            :issue-list="registeredIssueList"
+            table-class="registered"
+          />
         </div>
         <div class="col">
-          <table class="table working">
-            <colgroup>
-              <col class="marker" />
-              <col />
-            </colgroup>
-            <thead>
-              <th class="marker"></th>
-              <th>진행 중</th>
-            </thead>
-            <tbody>
-              <tr v-for="issue in workingIssueList" :key="issue.issueId">
-                <td class="marker"></td>
-                <td>
-                  <div>
-                    <a
-                      :href="`/project/${projectId}/${issue.issueId}`"
-                      @click="moveIssue"
-                      >{{ issue.title }}</a
-                    >
-                  </div>
-                  <div class="mt-1 row">
-                    <div class="col">
-                      갱신일 :
-                      {{ issue.updatedAt | moment('YYYY-MM-DD hh:mm') }}
-                    </div>
-                    <div class="col text-right">
-                      {{ getMilestone(issue.milestoneId).name }}
-                    </div>
-                  </div>
-                  <div class="mt-1 inline-box" title="태그">
-                    <span class="tag-group">
-                      <span v-for="tagId in issue.tagIdList" :key="tagId"
-                        ><span class="tag-badge" :style="getTagStyle(tagId)">{{
-                          tags[tagId].name
-                        }}</span></span
-                      >
-                    </span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <member-board-vertical-table
+            title="진행 중"
+            :issue-list="workingIssueList"
+            table-class="working"
+          />
         </div>
         <div class="col">
-          <table class="table closed">
-            <colgroup>
-              <col class="marker" />
-              <col />
-            </colgroup>
-            <thead>
-              <th class="marker"></th>
-              <th>완료</th>
-            </thead>
-            <tbody>
-              <tr v-for="issue in closedIssueList" :key="issue.issueId">
-                <td class="marker"></td>
-                <td>
-                  <div>
-                    <a
-                      :href="`/project/${projectId}/${issue.issueId}`"
-                      @click="moveIssue"
-                      >{{ issue.title }}</a
-                    >
-                  </div>
-                  <div class="mt-1 row">
-                    <div class="col">
-                      갱신일 :
-                      {{ issue.updatedAt | moment('YYYY-MM-DD hh:mm') }}
-                    </div>
-                    <div class="col text-right">
-                      {{ getMilestone(issue.milestoneId).name }}
-                    </div>
-                  </div>
-                  <div class="mt-1 inline-box" title="태그">
-                    <span class="tag-group">
-                      <span v-for="tagId in issue.tagIdList" :key="tagId"
-                        ><span class="tag-badge" :style="getTagStyle(tagId)">{{
-                          tags[tagId].name
-                        }}</span></span
-                      >
-                    </span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <member-board-vertical-table
+            title="완료"
+            :issue-list="closedIssueList"
+            table-class="closed"
+          />
         </div>
       </div>
     </div>
     <div v-else>
       <div class="row">
         <div class="col">
-          <table class="table registered">
-            <colgroup>
-              <col class="marker" />
-              <col />
-              <col style="width: 150px;" />
-              <col style="width: 150px;" />
-            </colgroup>
-            <thead>
-              <th class="marker"></th>
-              <th>할일</th>
-              <th>마일스톤</th>
-              <th>갱신일</th>
-            </thead>
-            <tbody>
-              <tr v-for="issue in registeredIssueList" :key="issue.issueId">
-                <td class="marker"></td>
-                <td>
-                  <div>
-                    <a
-                      :href="`/project/${projectId}/${issue.issueId}`"
-                      @click="moveIssue"
-                      >{{ issue.title }}</a
-                    >
-                  </div>
-                  <div class="inline-box" title="태그">
-                    <span class="tag-group">
-                      <span v-for="tagId in issue.tagIdList" :key="tagId"
-                        ><span class="tag-badge" :style="getTagStyle(tagId)">{{
-                          tags[tagId].name
-                        }}</span></span
-                      >
-                    </span>
-                  </div>
-                </td>
-                <td>{{ getMilestone(issue.milestoneId).name }}</td>
-                <td>{{ issue.updatedAt | moment('YYYY-MM-DD hh:mm') }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <member-board-horizontal-table
+            title="할일"
+            :issue-list="registeredIssueList"
+            table-class="registered"
+          />
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <table class="table working">
-            <colgroup>
-              <col class="marker" />
-              <col />
-              <col style="width: 150px;" />
-              <col style="width: 150px;" />
-            </colgroup>
-            <thead>
-              <th class="marker"></th>
-              <th>진행 중</th>
-              <th>마일스톤</th>
-              <th>갱신일</th>
-            </thead>
-            <tbody>
-              <tr v-for="issue in workingIssueList" :key="issue.issueId">
-                <td class="marker"></td>
-                <td>
-                  <div>
-                    <a
-                      :href="`/project/${projectId}/${issue.issueId}`"
-                      @click="moveIssue"
-                      >{{ issue.title }}</a
-                    >
-                  </div>
-                  <div class="inline-box" title="태그">
-                    <span class="tag-group">
-                      <span v-for="tagId in issue.tagIdList" :key="tagId"
-                        ><span class="tag-badge" :style="getTagStyle(tagId)">{{
-                          tags[tagId].name
-                        }}</span></span
-                      >
-                    </span>
-                  </div>
-                </td>
-                <td>{{ getMilestone(issue.milestoneId).name }}</td>
-                <td>{{ issue.updatedAt | moment('YYYY-MM-DD hh:mm') }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <member-board-horizontal-table
+            title="진행 중"
+            :issue-list="workingIssueList"
+            table-class="working"
+          />
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <table class="table closed">
-            <colgroup>
-              <col class="marker" />
-              <col />
-              <col style="width: 150px;" />
-              <col style="width: 150px;" />
-            </colgroup>
-            <thead>
-              <th class="marker"></th>
-              <th>완료</th>
-              <th>마일스톤</th>
-              <th>갱신일</th>
-            </thead>
-            <tbody>
-              <tr v-for="issue in closedIssueList" :key="issue.issueId">
-                <td class="marker"></td>
-                <td>
-                  <div>
-                    <a
-                      :href="`/project/${projectId}/${issue.issueId}`"
-                      @click="moveIssue"
-                      >{{ issue.title }}</a
-                    >
-                  </div>
-                  <div class="inline-box" title="태그">
-                    <span class="tag-group">
-                      <span v-for="tagId in issue.tagIdList" :key="tagId"
-                        ><span class="tag-badge" :style="getTagStyle(tagId)">{{
-                          tags[tagId].name
-                        }}</span></span
-                      >
-                    </span>
-                  </div>
-                </td>
-                <td>{{ getMilestone(issue.milestoneId).name }}</td>
-                <td>{{ issue.updatedAt | moment('YYYY-MM-DD hh:mm') }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <member-board-horizontal-table
+            title="완료"
+            :issue-list="closedIssueList"
+            table-class="closed"
+          />
         </div>
       </div>
     </div>
@@ -277,11 +64,12 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
-
 import { issueService } from '@/service/issue-service';
+import MemberBoardHorizontalTable from '@/components/board/MemberBoardHorizontalTable.vue';
+import MemberBoardVerticalTable from '@/components/board/MemberBoardVerticalTable.vue';
 
 export default {
+  components: { MemberBoardHorizontalTable, MemberBoardVerticalTable },
   props: {
     member: {
       type: Object,
@@ -306,9 +94,6 @@ export default {
     };
   },
   computed: {
-    ...mapState('project', ['projectId']),
-    ...mapState('dooray', ['tags']),
-    ...mapGetters('dooray', ['getMilestone', 'getTagStyle']),
     registeredIssueList() {
       return this.issueList.filter(
         (issue) => issue.workflowTypeCode == 'REGISTERED'
@@ -351,21 +136,12 @@ export default {
       },
     },
   },
-  methods: {
-    moveIssue() {
-      document
-        .querySelector(
-          '#main-wrapper > section > section > section > project-contents-layout > project-contents-header > div > project-contents-type-selector > div > button:nth-child(3)'
-        )
-        .click();
-    },
-  },
 };
 </script>
 
 <style scoped src="bootstrap/dist/css/bootstrap.min.css"></style>
 
-<style scoped>
+<style>
 .board .member-board img {
   border-radius: 50%;
   border: 1px solid rgba(51, 51, 51, 0.15);

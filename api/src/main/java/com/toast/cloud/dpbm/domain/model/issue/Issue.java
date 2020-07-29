@@ -1,10 +1,12 @@
 package com.toast.cloud.dpbm.domain.model.issue;
 
 import com.toast.cloud.common.jpa.enitty.AbstractBaseEntity;
-import com.toast.cloud.dpbm.domain.model.issue.code.WorkflowTypeCode;
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -23,9 +25,8 @@ public class Issue extends AbstractBaseEntity<String> {
     private String moduleId;
     private String workingTypeId;
     private BigDecimal mandays;
-    private String workflowId;
-    @Enumerated(EnumType.STRING)
-    private WorkflowTypeCode workflowTypeCode;
+    @Setter
+    private Workflow workflow;
     private String milestoneId;
     private ZonedDateTime updatedAt;
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -40,8 +41,7 @@ public class Issue extends AbstractBaseEntity<String> {
                   String moduleId,
                   String workingTypeId,
                   BigDecimal mandays,
-                  @NonNull String workflowId,
-                  @NonNull WorkflowTypeCode workflowTypeCode,
+                  @NonNull Workflow workflow,
                   String milestoneId,
                   @NonNull ZonedDateTime updatedAt,
                   @NonNull List<String> tagIdList) {
@@ -53,8 +53,7 @@ public class Issue extends AbstractBaseEntity<String> {
         this.moduleId = moduleId;
         this.workingTypeId = workingTypeId;
         this.mandays = mandays;
-        this.workflowId = workflowId;
-        this.workflowTypeCode = workflowTypeCode;
+        this.workflow = workflow;
         this.milestoneId = milestoneId;
         this.updatedAt = updatedAt;
         this.issueTagList = new ArrayList<>();

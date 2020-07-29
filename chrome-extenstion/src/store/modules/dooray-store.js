@@ -84,7 +84,13 @@ const getters = {
     if (id == null) {
       return { name: '' };
     }
-    return state.milestones.find((milestone) => milestone.id === id);
+
+    const milestone = state.milestones.find((milestone) => milestone.id === id);
+    if (milestone === undefined) {
+      return { name: '' };
+    }
+
+    return milestone;
   },
   getNotClosedWorkflowIds: (state) => {
     return state.workflows

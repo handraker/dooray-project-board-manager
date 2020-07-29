@@ -4,6 +4,7 @@ import com.querydsl.core.types.Predicate;
 import com.toast.cloud.dpbm.application.model.issue.IssueDTO;
 import com.toast.cloud.dpbm.domain.model.issue.Issue;
 import com.toast.cloud.dpbm.domain.model.issue.IssueRepository;
+import com.toast.cloud.dpbm.domain.model.issue.Workflow;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,8 +39,7 @@ public class IssueAppService {
                     .moduleId(issueDTO.getModuleId())
                     .workingTypeId(issueDTO.getWorkingTypeId())
                     .mandays(issueDTO.getMandays())
-                    .workflowId(issueDTO.getWorkflowId())
-                    .workflowTypeCode(issueDTO.getWorkflowTypeCode())
+                    .workflow(new Workflow(issueDTO.getWorkflowId(), issueDTO.getWorkflowTypeCode()))
                     .milestoneId(issueDTO.getMilestoneId())
                     .tagIdList(issueDTO.getTagIdList())
                     .updatedAt(issueDTO.getUpdatedAt())

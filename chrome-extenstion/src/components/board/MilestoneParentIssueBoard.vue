@@ -59,6 +59,14 @@
                 @click="moveIssue"
                 >{{ boardItem.parentIssue.title }}</a
               >
+              <button
+                type="button"
+                class="d-toolbar-white-icon-btn open-new-popup-btn ng-scope"
+                tooltip-class="icon-tooltip in-button"
+                @click="openIssuePopup(boardItem.parentIssue.parentIssueId)"
+              >
+                <span class="v2-icons-open-new"></span>
+              </button>
             </td>
             <td>
               <issue-progress-bar
@@ -298,8 +306,28 @@ export default {
         })
         .subscribe(() => this.getParentIssueBoard());
     },
+    openIssuePopup(issueId) {
+      const width = 800;
+      const height = 800;
+      const left = screen.width / 2 - width / 2;
+      const top = screen.height / 2 - height / 2;
+
+      window.open(
+        `/popup/project/posts/${issueId}`,
+        '_blank',
+        `width=${width},height=${height},left=${left},top=${top}`
+      );
+    },
   },
 };
 </script>
 
 <style scoped src="bootstrap/dist/css/bootstrap.min.css"></style>
+
+<style scoped>
+.board .table .d-toolbar-white-icon-btn {
+  padding-left: 5px;
+  padding-right: 5px;
+  height: 20px;
+}
+</style>

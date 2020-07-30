@@ -35,6 +35,7 @@ public class IssueAppService {
                     .parentIssueId(issueDTO.getParentIssueId())
                     .projectId(issueDTO.getProjectId())
                     .title(issueDTO.getTitle())
+                    .issueNo(issueDTO.getIssueNo())
                     .memberId(issueDTO.getMemberId())
                     .moduleId(issueDTO.getModuleId())
                     .workingTypeId(issueDTO.getWorkingTypeId())

@@ -22,6 +22,7 @@ public class IssueDTO {
     private String parentIssueId;
     private String projectId;
     private String memberId;
+    private int issueNo;
     private String title;
     private String moduleId;
     private String workingTypeId;
@@ -37,6 +38,7 @@ public class IssueDTO {
         this.parentIssueId = issue.getParentIssueId();
         this.projectId = issue.getProjectId();
         this.memberId = issue.getMemberId();
+        this.issueNo = issue.getIssueNo();
         this.title = issue.getTitle();
         this.moduleId = issue.getModuleId();
         this.workingTypeId = issue.getWorkingTypeId();
@@ -57,6 +59,7 @@ public class IssueDTO {
                     String parentIssueId,
                     @NonNull String projectId,
                     @NonNull String title,
+                    int issueNo,
                     String memberId,
                     String moduleId,
                     String workingTypeId,
@@ -69,6 +72,7 @@ public class IssueDTO {
         this.issueId = issueId;
         this.parentIssueId = parentIssueId;
         this.projectId = projectId;
+        this.issueNo = issueNo;
         this.title = title;
         this.memberId = memberId;
         this.moduleId = moduleId;

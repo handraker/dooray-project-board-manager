@@ -77,6 +77,7 @@ export default {
                 parentIssueId: content.id,
                 projectId: this.projectId,
                 title: content.subject,
+                issueNo: content.number,
                 moduleId: this.getModuleId(content.tagIdList),
                 devStatusCode: 'WAITING',
                 devStartDate: null,
@@ -106,6 +107,7 @@ export default {
                     parentIssueId: issueContent.parent.id,
                     projectId: this.projectId,
                     title: issueContent.subject,
+                    issueNo: issueContent.number,
                     memberId: this.getMemberId(issueContent.users),
                     moduleId,
                     workingTypeId: this.getWorkingTypeId(

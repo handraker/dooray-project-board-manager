@@ -16,6 +16,7 @@ public class ModifyParentIssueRequest {
     private String parentIssueId;
     @NotNull
     private String title;
+    private int issueNo;
     private String moduleId;
     @NotNull
     private DevStatusCode devStatusCode;
@@ -31,6 +32,7 @@ public class ModifyParentIssueRequest {
         return ParentIssueDTO.builder()
             .parentIssueId(parentIssueId)
             .title(title)
+            .issueNo(issueNo)
             .moduleId(moduleId)
             .devStatusCode(devStatusCode)
             .devStartDate(devStartDate)

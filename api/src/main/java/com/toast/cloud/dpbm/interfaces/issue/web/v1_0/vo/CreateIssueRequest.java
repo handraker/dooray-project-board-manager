@@ -31,6 +31,7 @@ public class CreateIssueRequest {
         private String projectId;
         @NotNull
         private String title;
+        private int issueNo;
         private String memberId;
         private String moduleId;
         private String workingTypeId;
@@ -54,6 +55,7 @@ public class CreateIssueRequest {
                 .parentIssueId(issue.parentIssueId)
                 .projectId(issue.projectId)
                 .title(issue.title)
+                .issueNo(issue.getIssueNo())
                 .memberId(issue.memberId)
                 .moduleId(issue.moduleId)
                 .workingTypeId(issue.workingTypeId)

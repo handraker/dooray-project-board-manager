@@ -17,7 +17,7 @@ let section = null;
 let divider = null;
 let button = null;
 
-const intervalId = setInterval(() => {
+setInterval(() => {
   topHeaderDiv = document.querySelector(
     '#main-wrapper > section > section > section > project-contents-layout > project-contents-header > div > project-contents-type-selector > div'
   );
@@ -39,7 +39,6 @@ const intervalId = setInterval(() => {
       return;
     }
 
-    clearInterval(intervalId);
     section = document.createElement('section');
     section.id = 'dooray-project-board-manager';
     section.className = 'main-contents-body layout-row';

@@ -20,6 +20,7 @@ public class Issue extends AbstractBaseEntity<String> {
 
     private String parentIssueId;
     private String projectId;
+    private int issueNo;
     private String title;
     private String memberId;
     private String moduleId;
@@ -37,6 +38,7 @@ public class Issue extends AbstractBaseEntity<String> {
                   String parentIssueId,
                   @NonNull String projectId,
                   @NonNull String title,
+                  int issueNo,
                   String memberId,
                   String moduleId,
                   String workingTypeId,
@@ -49,6 +51,7 @@ public class Issue extends AbstractBaseEntity<String> {
         this.parentIssueId = parentIssueId;
         this.projectId = projectId;
         this.title = title;
+        this.issueNo = issueNo;
         this.memberId = memberId;
         this.moduleId = moduleId;
         this.workingTypeId = workingTypeId;

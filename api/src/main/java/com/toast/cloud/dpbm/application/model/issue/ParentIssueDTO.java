@@ -16,6 +16,7 @@ public class ParentIssueDTO {
     private String parentIssueId;
     private String projectId;
     private String title;
+    private int issueNo;
     private String moduleId;
     private DevStatusCode devStatusCode;
     private LocalDate devStartDate;
@@ -29,6 +30,7 @@ public class ParentIssueDTO {
         this.parentIssueId = parentIssue.getId();
         this.projectId = parentIssue.getProjectId();
         this.title = parentIssue.getTitle();
+        this.issueNo = parentIssue.getIssueNo();
         this.moduleId = parentIssue.getModuleId();
         this.devStatusCode = parentIssue.getDevStatusCode();
         this.devStartDate = parentIssue.getDevStartDate();
@@ -43,6 +45,7 @@ public class ParentIssueDTO {
     public ParentIssueDTO(@NonNull String parentIssueId,
                           String projectId,
                           @NonNull String title,
+                          int issueNo,
                           String moduleId,
                           @NonNull DevStatusCode devStatusCode,
                           LocalDate devStartDate,
@@ -54,6 +57,7 @@ public class ParentIssueDTO {
         this.parentIssueId = parentIssueId;
         this.projectId = projectId;
         this.title = title;
+        this.issueNo = issueNo;
         this.moduleId = moduleId;
         this.devStatusCode = devStatusCode;
         this.devStartDate = devStartDate;

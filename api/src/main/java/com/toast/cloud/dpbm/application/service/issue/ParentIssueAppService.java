@@ -20,6 +20,7 @@ public class ParentIssueAppService {
         ParentIssue parentIssue = parentIssueRepository.findById(parentIssueDTO.getParentIssueId())
             .map(inner -> {
                 inner.setTitle(parentIssueDTO.getTitle());
+                inner.setIssueNo(parentIssueDTO.getIssueNo());
                 inner.setModuleId(parentIssueDTO.getModuleId());
                 inner.setMilestoneId(parentIssueDTO.getMilestoneId());
                 return inner;
@@ -28,6 +29,7 @@ public class ParentIssueAppService {
                 .id(parentIssueDTO.getParentIssueId())
                 .projectId(parentIssueDTO.getProjectId())
                 .title(parentIssueDTO.getTitle())
+                .issueNo(parentIssueDTO.getIssueNo())
                 .moduleId(parentIssueDTO.getModuleId())
                 .devStatusCode(parentIssueDTO.getDevStatusCode())
                 .devStartDate(parentIssueDTO.getDevStartDate())
@@ -44,6 +46,7 @@ public class ParentIssueAppService {
     public void modify(ParentIssueDTO parentIssueDTO) {
         parentIssueRepository.findById(parentIssueDTO.getParentIssueId()).ifPresent(parentIssue -> {
             parentIssue.modify(parentIssueDTO.getTitle(),
+                               parentIssueDTO.getIssueNo(),
                                parentIssueDTO.getModuleId(),
                                parentIssueDTO.getDevStatusCode(),
                                parentIssueDTO.getDevStartDate(),

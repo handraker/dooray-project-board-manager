@@ -13,6 +13,7 @@
         <td class="marker"></td>
         <td>
           <div>
+            <span>{{ issue.issueNo }} : </span>
             <a
               :href="`/project/${projectId}/${issue.issueId}`"
               @click="moveIssue"

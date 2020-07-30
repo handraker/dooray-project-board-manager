@@ -18,6 +18,8 @@ public class ParentIssue extends AbstractBaseEntity<String> {
     @Setter
     private String title;
     @Setter
+    private int issueNo;
+    @Setter
     private String moduleId;
     @Enumerated(EnumType.STRING)
     private DevStatusCode devStatusCode;
@@ -38,6 +40,7 @@ public class ParentIssue extends AbstractBaseEntity<String> {
     private ParentIssue(@NonNull String id,
                         @NonNull String projectId,
                         @NonNull String title,
+                        int issueNo,
                         String moduleId,
                         @NonNull DevStatusCode devStatusCode,
                         LocalDate devStartDate,
@@ -49,6 +52,7 @@ public class ParentIssue extends AbstractBaseEntity<String> {
         generateId(id);
         this.projectId = projectId;
         this.title = title;
+        this.issueNo = issueNo;
         this.moduleId = moduleId;
         this.devStatusCode = devStatusCode;
         this.devStartDate = devStartDate;
@@ -60,6 +64,7 @@ public class ParentIssue extends AbstractBaseEntity<String> {
     }
 
     public void modify(String title,
+                       int issueNo,
                        String moduleId,
                        DevStatusCode devStatusCode,
                        LocalDate devStartDate,
@@ -69,6 +74,7 @@ public class ParentIssue extends AbstractBaseEntity<String> {
                        LocalDate deployEndDate,
                        String milestoneId) {
         this.title = title;
+        this.issueNo = issueNo;
         this.moduleId = moduleId;
         this.devStatusCode = devStatusCode;
         this.devStartDate = devStartDate;

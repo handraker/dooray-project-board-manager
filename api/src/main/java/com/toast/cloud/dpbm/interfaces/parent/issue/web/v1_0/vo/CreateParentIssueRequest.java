@@ -18,6 +18,7 @@ public class CreateParentIssueRequest {
     private String projectId;
     @NotNull
     private String title;
+    private int issueNo;
     private String moduleId;
     @NotNull
     private DevStatusCode devStatusCode;
@@ -34,6 +35,7 @@ public class CreateParentIssueRequest {
             .parentIssueId(parentIssueId)
             .projectId(projectId)
             .title(title)
+            .issueNo(issueNo)
             .moduleId(moduleId)
             .devStatusCode(devStatusCode)
             .devStartDate(devStartDate)

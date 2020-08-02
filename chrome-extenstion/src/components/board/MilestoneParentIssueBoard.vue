@@ -28,6 +28,7 @@
         </colgroup>
         <thead>
           <tr>
+            <th scope="col">모듈</th>
             <th scope="col">상위 업무</th>
             <th scope="col" class="text-center">하위 업무</th>
             <th scope="col" class="text-center">개발 상태</th>

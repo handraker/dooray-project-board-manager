@@ -129,14 +129,14 @@
 <script>
 import qs from 'qs';
 import moment from 'moment';
-import { mapState, mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import { reduce } from 'lodash-es';
 import { from } from 'rxjs';
 import { mergeMap, toArray } from 'rxjs/operators';
 
 import { getContrast, getWorkingDays } from '@/common/utils';
 import { boardService } from '@/service/board-service';
-import { parentIssueService } from '@/service/parent-issue-service';
+import { issueService } from '@/service/issue-service';
 import DateProgressBar from '@/components/progress-bar/DateProgressBar.vue';
 import IssueProgressBar from '@/components/progress-bar/IssueProgressBar.vue';
 import DevStatusBox from '@/components/status/DevStatusBox.vue';
@@ -273,24 +273,24 @@ export default {
         .subscribe((items) => (this.boardItems = items));
     },
     changeDevStatusCode(devStatusCode, parentIssue) {
-      parentIssueService
-        .modify$({
+      issueService
+        .modifyProgress$({
           ...parentIssue,
           devStatusCode,
         })
         .subscribe(() => this.getParentIssueBoard());
     },
     changeDeployStatusCode(deployStatusCode, parentIssue) {
-      parentIssueService
-        .modify$({
+      issueService
+        .modifyProgress$({
           ...parentIssue,
           deployStatusCode,
         })
         .subscribe(() => this.getParentIssueBoard());
     },
     changeDevDate(date, parentIssue) {
-      parentIssueService
-        .modify$({
+      issueService
+        .modifyProgress$({
           ...parentIssue,
           devStartDate: date.from,
           devEndDate: date.to,
@@ -298,8 +298,8 @@ export default {
         .subscribe(() => this.getParentIssueBoard());
     },
     changeDeployDate(date, parentIssue) {
-      parentIssueService
-        .modify$({
+      issueService
+        .modifyProgress$({
           ...parentIssue,
           deployStartDate: date.from,
           deployEndDate: date.to,

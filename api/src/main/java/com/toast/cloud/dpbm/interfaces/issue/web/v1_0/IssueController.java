@@ -5,6 +5,7 @@ import com.toast.cloud.dpbm.application.service.issue.IssueAppService;
 import com.toast.cloud.dpbm.domain.model.issue.IssuePredicate;
 import com.toast.cloud.dpbm.interfaces.issue.web.v1_0.vo.CreateIssueRequest;
 import com.toast.cloud.dpbm.interfaces.issue.web.v1_0.vo.GetIssueRequest;
+import com.toast.cloud.dpbm.interfaces.issue.web.v1_0.vo.ModifyIssueProgressRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +21,27 @@ public class IssueController {
 
     @CrossOrigin("https://nhnent.dooray.com")
     @PostMapping("/dpbm/issue")
-    public void createParentIssue(@Valid @RequestBody CreateIssueRequest request) {
+    public void createIssue(@Valid @RequestBody CreateIssueRequest request) {
         issueAppService.create(request.getIssueDTOList());
+    }
+
+    @CrossOrigin("https://nhnent.dooray.com")
+    @DeleteMapping("/dpbm/issue/{issueId}")
+    public void deleteIssue(@PathVariable("issueId") String issueId) {
+        issueAppService.deleteIssue(issueId);
+    }
+
+    @CrossOrigin("https://nhnent.dooray.com")
+    @DeleteMapping("/dpbm/issue/{issueId}/child-issue")
+    public void deleteChildIssue(@PathVariable("issueId") String issueId) {
+        issueAppService.deleteChildIssue(issueId);
+    }
+
+    @CrossOrigin("https://nhnent.dooray.com")
+    @PutMapping("/dpbm/issue/{issueId}/progress")
+    public void modifyIssueProgress(@PathVariable("issueId") String issueId,
+                                    @Valid @RequestBody ModifyIssueProgressRequest request) {
+        issueAppService.modifyIssueProgress(issueId, request.getIssueProgressDTO());
     }
 
     @CrossOrigin("https://nhnent.dooray.com")

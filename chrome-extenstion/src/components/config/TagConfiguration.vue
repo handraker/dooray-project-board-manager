@@ -1,34 +1,36 @@
 <template>
-  <div>
-    <h4>Tag Configuration</h4>
-    <table class="table" style="margin-top: 10px;">
-      <colgroup>
-        <col />
-        <col />
-      </colgroup>
-      <thead>
-        <tr>
-          <th scope="col">Tag Prefix ID</th>
-          <th scope="col">Tags</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="tagPrefix in tagPrefixs" :key="tagPrefix.id">
-          <td>{{ tagPrefix.id }}</td>
-          <td>
-            <div class="inline-box" title="태그">
-              <span class="tag-group">
-                <span v-for="tag in getTags(tagPrefix.id)" :key="tag.id"
-                  ><span class="tag-badge" :style="getTagStyle(tag)">{{
-                    tag.name
-                  }}</span></span
-                >
-              </span>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="card">
+    <h5 class="card-header">Tag Configuration</h5>
+    <div class="card-body">
+      <table class="table" style="margin-top: 10px;">
+        <colgroup>
+          <col />
+          <col />
+        </colgroup>
+        <thead>
+          <tr>
+            <th scope="col">Tag Prefix ID</th>
+            <th scope="col">Tags</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="tagPrefix in tagPrefixs" :key="tagPrefix.id">
+            <td>{{ tagPrefix.id }}</td>
+            <td>
+              <div class="inline-box" title="태그">
+                <span class="tag-group">
+                  <span v-for="tag in getTags(tagPrefix.id)" :key="tag.id"
+                    ><span class="tag-badge" :style="getTagStyle(tag)">{{
+                      tag.name
+                    }}</span></span
+                  >
+                </span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 

@@ -3,7 +3,9 @@ package com.toast.cloud.dpbm.application.service.board;
 import com.querydsl.core.types.Predicate;
 import com.toast.cloud.dpbm.application.model.board.ParentIssueBoard;
 import com.toast.cloud.dpbm.application.model.board.ParentIssueBoardItem;
-import com.toast.cloud.dpbm.domain.model.issue.*;
+import com.toast.cloud.dpbm.domain.model.issue.Issue;
+import com.toast.cloud.dpbm.domain.model.issue.IssuePredicate;
+import com.toast.cloud.dpbm.domain.model.issue.IssueRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +18,13 @@ import java.util.stream.StreamSupport;
 public class ParentIssueBoardAppService {
 
     private final IssueRepository issueRepository;
-    private final ParentIssueRepository parentIssueRepository;
 
     public ParentIssueBoard getParentIssueBoard(String projectId, String milestoneId, String moduleId) {
-        Iterable<ParentIssue> iterable = parentIssueRepository.findAll(ParentIssuePredicate.builder()
-                                                                           .projectId(projectId)
-                                                                           .moduleId(moduleId)
-                                                                           .milestoneId(milestoneId)
-                                                                           .build());
+        Iterable<Issue> iterable = issueRepository.findParentIssue(IssuePredicate.builder()
+                                                                       .projectId(projectId)
+                                                                       .moduleId(moduleId)
+                                                                       .milestoneId(milestoneId)
+                                                                       .build());
         List<ParentIssueBoardItem> items = StreamSupport.stream(iterable.spliterator(), false)
             .map(parentIssue -> {
                 Predicate predicate = IssuePredicate.builder()

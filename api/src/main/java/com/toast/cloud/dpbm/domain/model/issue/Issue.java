@@ -3,10 +3,7 @@ package com.toast.cloud.dpbm.domain.model.issue;
 import com.toast.cloud.common.jpa.enitty.AbstractBaseEntity;
 import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -30,6 +27,9 @@ public class Issue extends AbstractBaseEntity<String> {
     private Workflow workflow;
     private String milestoneId;
     private ZonedDateTime updatedAt;
+    @OneToOne
+    @JoinColumn(name = "id", referencedColumnName = "id")
+    private IssueProgress progress;
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<IssueTag> issueTagList;
 

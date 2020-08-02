@@ -9,7 +9,11 @@ import java.util.List;
 @NoRepositoryBean
 public interface IssueRepositoryCustom {
 
+    List<Issue> findParentIssue(Predicate predicate);
+
     List<Issue> findByPredicate(Predicate predicate);
+
+    void deleteByIssueId(String issueId);
 
     void deleteByParentIssue(String parentIssueId);
 

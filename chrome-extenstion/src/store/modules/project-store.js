@@ -1,5 +1,5 @@
 import { from } from 'rxjs';
-import { tap, toArray, filter } from 'rxjs/operators';
+import { filter, tap, toArray } from 'rxjs/operators';
 
 import { projectService } from '@/service/project-service';
 
@@ -11,6 +11,7 @@ const getDefaultState = () => {
     doorayMandaysTagPrefixId: '',
     department: '',
     modules: [],
+    projectMilestones: [],
   };
 };
 
@@ -40,6 +41,9 @@ const mutations = {
         toArray()
       )
       .subscribe((tags) => (state.modules = tags));
+  },
+  setProjectMilestones(state, projectMilestones) {
+    state.projectMilestones = projectMilestones;
   },
 };
 
@@ -137,6 +141,17 @@ const actions = {
     return projectService
       .getProject$({ projectId })
       .pipe(tap((project) => commit('setProject', project)))
+      .toPromise();
+  },
+
+  getProjectMilestones({ commit }, projectId) {
+    return projectService
+      .getProjectMilestones$({ projectId })
+      .pipe(
+        tap((projectMilestones) =>
+          commit('setProjectMilestones', projectMilestones)
+        )
+      )
       .toPromise();
   },
 };

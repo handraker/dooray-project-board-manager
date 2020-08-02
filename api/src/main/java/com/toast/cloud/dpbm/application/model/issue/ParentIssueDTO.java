@@ -1,11 +1,9 @@
 package com.toast.cloud.dpbm.application.model.issue;
 
-import com.toast.cloud.dpbm.domain.model.issue.ParentIssue;
+import com.toast.cloud.dpbm.domain.model.issue.Issue;
 import com.toast.cloud.dpbm.domain.model.issue.code.DevStatusCode;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import java.time.LocalDate;
 
@@ -13,7 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ParentIssueDTO {
 
-    private String parentIssueId;
+    private String issueId;
     private String projectId;
     private String title;
     private int issueNo;
@@ -26,46 +24,19 @@ public class ParentIssueDTO {
     private LocalDate deployEndDate;
     private String milestoneId;
 
-    public ParentIssueDTO(ParentIssue parentIssue) {
-        this.parentIssueId = parentIssue.getId();
+    public ParentIssueDTO(Issue parentIssue) {
+        this.issueId = parentIssue.getId();
         this.projectId = parentIssue.getProjectId();
         this.title = parentIssue.getTitle();
         this.issueNo = parentIssue.getIssueNo();
         this.moduleId = parentIssue.getModuleId();
-        this.devStatusCode = parentIssue.getDevStatusCode();
-        this.devStartDate = parentIssue.getDevStartDate();
-        this.devEndDate = parentIssue.getDevEndDate();
-        this.deployStatusCode = parentIssue.getDeployStatusCode();
-        this.deployStartDate = parentIssue.getDeployStartDate();
-        this.deployEndDate = parentIssue.getDeployEndDate();
+        this.devStatusCode = parentIssue.getProgress().getDevStatusCode();
+        this.devStartDate = parentIssue.getProgress().getDevStartDate();
+        this.devEndDate = parentIssue.getProgress().getDevEndDate();
+        this.deployStatusCode = parentIssue.getProgress().getDeployStatusCode();
+        this.deployStartDate = parentIssue.getProgress().getDeployStartDate();
+        this.deployEndDate = parentIssue.getProgress().getDeployEndDate();
         this.milestoneId = parentIssue.getMilestoneId();
-    }
-
-    @Builder
-    public ParentIssueDTO(@NonNull String parentIssueId,
-                          String projectId,
-                          @NonNull String title,
-                          int issueNo,
-                          String moduleId,
-                          @NonNull DevStatusCode devStatusCode,
-                          LocalDate devStartDate,
-                          LocalDate devEndDate,
-                          @NonNull DevStatusCode deployStatusCode,
-                          LocalDate deployStartDate,
-                          LocalDate deployEndDate,
-                          String milestoneId) {
-        this.parentIssueId = parentIssueId;
-        this.projectId = projectId;
-        this.title = title;
-        this.issueNo = issueNo;
-        this.moduleId = moduleId;
-        this.devStatusCode = devStatusCode;
-        this.devStartDate = devStartDate;
-        this.devEndDate = devEndDate;
-        this.deployStatusCode = deployStatusCode;
-        this.deployStartDate = deployStartDate;
-        this.deployEndDate = deployEndDate;
-        this.milestoneId = milestoneId;
     }
 
 }

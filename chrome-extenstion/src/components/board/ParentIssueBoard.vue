@@ -55,7 +55,7 @@
             </th>
             <td>
               <a
-                :href="`/project/${projectId}/${boardItem.parentIssue.parentIssueId}`"
+                :href="`/project/${projectId}/${boardItem.parentIssue.issueId}`"
                 @click="moveIssue"
                 >{{ boardItem.parentIssue.title }}</a
               >
@@ -63,7 +63,7 @@
                 type="button"
                 class="d-toolbar-white-icon-btn open-new-popup-btn ng-scope"
                 tooltip-class="icon-tooltip in-button"
-                @click="openIssuePopup(boardItem.parentIssue.parentIssueId)"
+                @click="openIssuePopup(boardItem.parentIssue.issueId)"
               >
                 <span class="v2-icons-open-new"></span>
               </button>

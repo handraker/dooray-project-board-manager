@@ -9,7 +9,6 @@ import '@/assets/main.css';
 
 Vue.config.productionTip = false;
 
-let currentPath = '';
 let topHeaderDiv = null;
 let originalSection = null;
 let parentSection = null;
@@ -23,23 +22,6 @@ setInterval(() => {
     '#main-wrapper > section > section > section > project-contents-layout > project-contents-header > div > project-contents-type-selector > div'
   );
   if (topHeaderDiv != null) {
-    if (window.location.pathname !== currentPath) {
-      currentPath = window.location.pathname;
-      if (section != null) {
-        section.removeChild(app);
-        section = null;
-        app = null;
-
-        parentSection.removeChild(section);
-        originalSection.style.display = 'flex';
-      }
-
-      if (button != null) {
-        topHeaderDiv.removeChild(divider);
-        topHeaderDiv.removeChild(button);
-      }
-    }
-
     if (document.getElementById('dooray-project-board-manager')) {
       return;
     }
@@ -80,15 +62,26 @@ setInterval(() => {
     });
     topHeaderDiv.appendChild(button);
 
-    topHeaderDiv.getElementsByTagName('button').forEach((child) =>
-      child.addEventListener('click', () => {
-        if (child !== button) {
-          child.className = 'active';
-          button.className = '';
-          section.style.display = 'none';
-          originalSection.style.display = 'flex';
-        }
-      })
-    );
+    topHeaderDiv.addEventListener('click', (e) => {
+      const btn = e.path.find((elem) => elem.tagName === 'BUTTON');
+      if (e.target !== button && btn !== undefined) {
+        button.className = '';
+        section.style.display = 'none';
+        originalSection.style.display = 'flex';
+
+        btn.className = 'active';
+      }
+    });
+
+    // topHeaderDiv.getElementsByTagName('button').forEach((child) =>
+    //   child.addEventListener('click', () => {
+    //     if (child !== button) {
+    //       child.className = 'active';
+    //       button.className = '';
+    //       section.style.display = 'none';
+    //       originalSection.style.display = 'flex';
+    //     }
+    //   })
+    // );
   }
 }, 1000);

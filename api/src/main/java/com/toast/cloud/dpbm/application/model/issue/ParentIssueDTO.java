@@ -30,12 +30,21 @@ public class ParentIssueDTO {
         this.title = parentIssue.getTitle();
         this.issueNo = parentIssue.getIssueNo();
         this.moduleId = parentIssue.getModuleId();
-        this.devStatusCode = parentIssue.getProgress().getDevStatusCode();
-        this.devStartDate = parentIssue.getProgress().getDevStartDate();
-        this.devEndDate = parentIssue.getProgress().getDevEndDate();
-        this.deployStatusCode = parentIssue.getProgress().getDeployStatusCode();
-        this.deployStartDate = parentIssue.getProgress().getDeployStartDate();
-        this.deployEndDate = parentIssue.getProgress().getDeployEndDate();
+        if (parentIssue.getProgress() != null) {
+            this.devStatusCode = parentIssue.getProgress().getDevStatusCode();
+            this.devStartDate = parentIssue.getProgress().getDevStartDate();
+            this.devEndDate = parentIssue.getProgress().getDevEndDate();
+            this.deployStatusCode = parentIssue.getProgress().getDeployStatusCode();
+            this.deployStartDate = parentIssue.getProgress().getDeployStartDate();
+            this.deployEndDate = parentIssue.getProgress().getDeployEndDate();
+        } else {
+            this.devStatusCode = DevStatusCode.WAITING;
+            this.devStartDate = null;
+            this.devEndDate = null;
+            this.deployStatusCode = DevStatusCode.WAITING;
+            this.deployStartDate = null;
+            this.deployEndDate = null;
+        }
         this.milestoneId = parentIssue.getMilestoneId();
     }
 

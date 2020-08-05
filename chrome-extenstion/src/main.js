@@ -16,6 +16,7 @@ let parentSection = null;
 let section = null;
 let divider = null;
 let button = null;
+let app = null;
 
 setInterval(() => {
   topHeaderDiv = document.querySelector(
@@ -25,6 +26,10 @@ setInterval(() => {
     if (window.location.pathname !== currentPath) {
       currentPath = window.location.pathname;
       if (section != null) {
+        section.removeChild(app);
+        section = null;
+        app = null;
+
         parentSection.removeChild(section);
         originalSection.style.display = 'flex';
       }
@@ -45,7 +50,7 @@ setInterval(() => {
     section.style.display = 'none';
     section.style.height = '100%';
 
-    let app = document.createElement('div');
+    app = document.createElement('div');
     section.appendChild(app);
 
     originalSection = document.querySelector('.main-contents-body');

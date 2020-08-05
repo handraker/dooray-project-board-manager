@@ -1,6 +1,6 @@
 .board * {
   font-family: 'Nanum Gothic', Meiryo, 'Noto Sans JP', sans-serif,
-    'Lucida Sans Unicode', arial;
+  'Lucida Sans Unicode', arial;
 }
 
 .board {
@@ -28,7 +28,7 @@
 
 .board .milestone-board .content .table,
 .board .parent-issue-board .content .table {
-  min-width: 1600px;
+  min-width: 1500px;
 }
 
 .board .module-board {
@@ -108,7 +108,7 @@
 .b-popover {
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid rgba(0,0,0,.2);
+  border: 1px solid rgba(0, 0, 0, .2);
   border-radius: .3rem;
 }
 
@@ -130,7 +130,7 @@
   content: "";
   bottom: 0;
   border-width: .5rem .5rem 0;
-  border-top-color: rgba(0,0,0,.25);
+  border-top-color: rgba(0, 0, 0, .25);
   border-color: transparent;
   border-style: solid;
   display: block;
@@ -146,7 +146,7 @@
 .bs-popover-top > .arrow::before {
   bottom: 0;
   border-width: .5rem .5rem 0;
-  border-top-color: rgba(0,0,0,.25);
+  border-top-color: rgba(0, 0, 0, .25);
 }
 
 .bs-popover-top > .arrow {

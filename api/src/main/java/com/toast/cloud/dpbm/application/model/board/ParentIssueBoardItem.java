@@ -21,9 +21,14 @@ public class ParentIssueBoardItem implements Comparable {
         this.parentIssue = new ParentIssueDTO(parentIssue);
         this.mandayStatistics = mandayStatistics;
         this.countStatistics = countStatistics;
-        this.devDateProgress = new DateProgress(parentIssue.getProgress().getDevStartDate(), parentIssue.getProgress().getDevEndDate());
-        this.deployDateProgress = new DateProgress(parentIssue.getProgress().getDeployStartDate(),
-                                                   parentIssue.getProgress().getDeployEndDate());
+        if (parentIssue.getProgress() != null) {
+            this.devDateProgress = new DateProgress(parentIssue.getProgress().getDevStartDate(), parentIssue.getProgress().getDevEndDate());
+            this.deployDateProgress = new DateProgress(parentIssue.getProgress().getDeployStartDate(),
+                                                       parentIssue.getProgress().getDeployEndDate());
+        } else {
+            this.devDateProgress = new DateProgress();
+            this.deployDateProgress = new DateProgress();
+        }
     }
 
     @Override

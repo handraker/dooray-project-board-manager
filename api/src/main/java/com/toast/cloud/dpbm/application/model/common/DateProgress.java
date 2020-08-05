@@ -13,6 +13,13 @@ public class DateProgress {
     private int totalWorkingDays;
     private int remainingWorkingDays;
 
+    public DateProgress() {
+        this.from = null;
+        this.to = null;
+        this.totalWorkingDays = 0;
+        this.remainingWorkingDays = 0;
+    }
+
     public DateProgress(LocalDate from, LocalDate to) {
         this.from = from;
         this.to = to;

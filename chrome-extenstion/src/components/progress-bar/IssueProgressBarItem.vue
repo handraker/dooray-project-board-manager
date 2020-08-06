@@ -11,7 +11,8 @@
     aria-valuemin="0"
     aria-valuemax="100"
   >
-    <a @click.prevent="click">{{ value }}{{ postfix }}</a>
+    <a v-if="showDetail" @click.prevent="click">{{ detailText }}</a>
+    <a v-else @click.prevent="click">{{ value }}{{ postfix }}</a>
   </div>
 </template>
 
@@ -35,6 +36,11 @@ export default {
     postfix: {
       required: true,
       type: String,
+    },
+    showDetail: {
+      required: false,
+      type: Boolean,
+      _default: false,
     },
   },
   computed: {

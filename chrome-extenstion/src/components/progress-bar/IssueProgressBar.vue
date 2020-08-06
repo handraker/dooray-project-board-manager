@@ -8,6 +8,7 @@
         :value="item.value"
         :ratio="item.ratio"
         :postfix="postfix"
+        :show-detail="showDetail"
         @workflowClick="workflowClick"
       />
     </div>
@@ -32,6 +33,11 @@ export default {
       required: true,
       type: String,
     },
+    showDetail: {
+      required: false,
+      type: Boolean,
+      _default: false,
+    },
   },
   methods: {
     workflowClick(workflowId) {
@@ -49,6 +55,7 @@ export default {
   font-family: 'Nanum Gothic', Meiryo, 'Noto Sans JP', sans-serif,
     'Lucida Sans Unicode', arial;
 }
+
 .issue-progress * {
   font-size: 12px !important;
 }

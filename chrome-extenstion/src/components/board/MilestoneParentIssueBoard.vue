@@ -11,6 +11,22 @@
         :remaining-working-days="remainingWorkingDays"
         :disabled="true"
       />
+      <issue-progress-bar
+        v-if="totalMandayStatistics != null"
+        :total-value="totalMandayStatistics.totalValue"
+        :items="totalMandayStatistics.items"
+        :show-detail="true"
+        postfix="MD"
+        @workflowClick="searchIssue($event, boardItem)"
+      />
+      <issue-progress-bar
+        v-if="totalCountStatistics != null"
+        :total-value="totalCountStatistics.totalValue"
+        :items="totalCountStatistics.items"
+        :show-detail="true"
+        postfix="개"
+        @workflowClick="searchIssue($event, boardItem)"
+      />
     </p>
     <hr class="my-4" />
     <div class="content">
@@ -160,6 +176,8 @@ export default {
     return {
       selectedItems: [],
       boardItems: [],
+      totalMandayStatistics: null,
+      totalCountStatistics: null,
       importedCount: 0,
       totalCount: 0,
     };
@@ -259,6 +277,16 @@ export default {
         .click();
     },
     getParentIssueBoard() {
+      boardService
+        .getMilestoneBoard$({
+          projectId: this.projectId,
+          milestoneId: this.milestone.id,
+        })
+        .subscribe((response) => {
+          this.totalMandayStatistics = response.mandayStatistics;
+          this.totalCountStatistics = response.countStatistics;
+        });
+
       from(this.modules)
         .pipe(
           mergeMap((module) =>

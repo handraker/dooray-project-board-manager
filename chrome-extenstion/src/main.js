@@ -17,7 +17,7 @@ let divider = null;
 let button = null;
 let app = null;
 
-setInterval(() => {
+let intervalId = setInterval(() => {
   topHeaderDiv = document.querySelector(
     '#main-wrapper > section > section > section > project-contents-layout > project-contents-header > div > project-contents-type-selector > div'
   );
@@ -25,6 +25,8 @@ setInterval(() => {
     if (document.getElementById('dooray-project-board-manager')) {
       return;
     }
+
+    clearInterval(intervalId);
 
     section = document.createElement('section');
     section.id = 'dooray-project-board-manager';
@@ -72,16 +74,5 @@ setInterval(() => {
         btn.className = 'active';
       }
     });
-
-    // topHeaderDiv.getElementsByTagName('button').forEach((child) =>
-    //   child.addEventListener('click', () => {
-    //     if (child !== button) {
-    //       child.className = 'active';
-    //       button.className = '';
-    //       section.style.display = 'none';
-    //       originalSection.style.display = 'flex';
-    //     }
-    //   })
-    // );
   }
 }, 1000);

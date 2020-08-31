@@ -51,6 +51,7 @@ public class IssueController {
                                              .memberId(request.getMemberId())
                                              .from(request.getFrom().atStartOfDay(ZoneId.systemDefault()))
                                              .to(request.getTo().atStartOfDay(ZoneId.systemDefault()))
+                                             .workflowTypeCode(request.getWorkflowTypeCode())
                                              .build());
     }
 

@@ -90,50 +90,51 @@ export default {
   },
   data() {
     return {
-      issueList: [],
+      registeredIssueList: [],
+      workingIssueList: [],
+      closedIssueList: [],
     };
-  },
-  computed: {
-    registeredIssueList() {
-      return this.issueList.filter(
-        (issue) => issue.workflowTypeCode == 'REGISTERED'
-      );
-    },
-    workingIssueList() {
-      return this.issueList.filter(
-        (issue) => issue.workflowTypeCode == 'WORKING'
-      );
-    },
-    closedIssueList() {
-      return this.issueList.filter(
-        (issue) => issue.workflowTypeCode == 'CLOSED'
-      );
-    },
   },
   watch: {
     from: {
       immediate: true,
       handler() {
-        issueService
-          .getIssues$({
-            memberId: this.member.id,
-            from: this.from,
-            to: this.to,
-          })
-          .subscribe((issueList) => (this.issueList = issueList));
+        this.getIssueList();
       },
     },
     to: {
       immediate: true,
       handler() {
-        issueService
-          .getIssues$({
-            memberId: this.member.id,
-            from: this.from,
-            to: this.to,
-          })
-          .subscribe((issueList) => (this.issueList = issueList));
+        this.getIssueList();
       },
+    },
+  },
+  methods: {
+    getIssueList() {
+      issueService
+        .getIssues$({
+          memberId: this.member.id,
+          from: '2000-01-01',
+          to: '9999-12-31',
+          workflowTypeCode: 'REGISTERED',
+        })
+        .subscribe((issueList) => (this.registeredIssueList = issueList));
+      issueService
+        .getIssues$({
+          memberId: this.member.id,
+          from: this.from,
+          to: this.to,
+          workflowTypeCode: 'WORKING',
+        })
+        .subscribe((issueList) => (this.workingIssueList = issueList));
+      issueService
+        .getIssues$({
+          memberId: this.member.id,
+          from: this.from,
+          to: this.to,
+          workflowTypeCode: 'CLOSED',
+        })
+        .subscribe((issueList) => (this.closedIssueList = issueList));
     },
   },
 };

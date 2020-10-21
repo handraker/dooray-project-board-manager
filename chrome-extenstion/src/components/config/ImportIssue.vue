@@ -94,6 +94,7 @@ export default {
         .pipe(
           tap((response) => (this.totalCount = response.result.totalCount)),
           mergeMap((response) => response.result.contents),
+          tap(() => (this.importedCount += 1)),
           mergeMap((content) =>
             issueService.deleteIssue$({ issueId: content.id }).pipe(
               mergeMap(() => issueService.create$([this.getIssue(content)])),
@@ -108,8 +109,7 @@ export default {
               toArray(),
               mergeMap((issueList) => issueService.create$(issueList))
             )
-          ),
-          tap(() => (this.importedCount += 1))
+          )
         )
         .subscribe({
           complete: () => {

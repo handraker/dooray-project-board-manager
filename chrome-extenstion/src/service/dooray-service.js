@@ -47,6 +47,7 @@ class DoorayService {
           hasParent: false,
           size: 30,
           workflowIds,
+          order: '-postUpdatedAt',
         },
       })
       .pipe(map((response) => response.data));

@@ -19,11 +19,12 @@ public class ParentIssueBoardAppService {
 
     private final IssueRepository issueRepository;
 
-    public ParentIssueBoard getParentIssueBoard(String projectId, String milestoneId, String moduleId) {
+    public ParentIssueBoard getParentIssueBoard(String projectId, String milestoneId, String moduleId, boolean showInProgress) {
         Iterable<Issue> iterable = issueRepository.findParentIssue(IssuePredicate.builder()
                                                                        .projectId(projectId)
                                                                        .moduleId(moduleId)
                                                                        .milestoneId(milestoneId)
+                                                                       .showInProgress(showInProgress)
                                                                        .build());
         List<ParentIssueBoardItem> items = StreamSupport.stream(iterable.spliterator(), false)
             .map(parentIssue -> {

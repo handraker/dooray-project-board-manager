@@ -2,6 +2,7 @@ package com.toast.cloud.dpbm.domain.model.issue;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import com.toast.cloud.dpbm.domain.model.issue.code.DevStatusCode;
 import com.toast.cloud.dpbm.domain.model.issue.code.WorkflowTypeCode;
 import lombok.Builder;
 import org.apache.commons.lang.StringUtils;
@@ -18,7 +19,8 @@ public class IssuePredicate {
                                    String memberId,
                                    WorkflowTypeCode workflowTypeCode,
                                    ZonedDateTime from,
-                                   ZonedDateTime to) {
+                                   ZonedDateTime to,
+                                   boolean showInProgress) {
         QIssue issue = QIssue.issue;
 
         BooleanBuilder where = new BooleanBuilder();
@@ -52,6 +54,14 @@ public class IssuePredicate {
 
         if (to != null) {
             where.and(issue.updatedAt.lt(to));
+        }
+
+        if (showInProgress) {
+            BooleanBuilder condition = new BooleanBuilder();
+            condition.and(issue.progress.devStatusCode.in(DevStatusCode.WAITING, DevStatusCode.WORKING)
+                              .and(issue.progress.deployStatusCode.in(DevStatusCode.WAITING, DevStatusCode.WORKING)));
+            condition.or(issue.progress.devStatusCode.isNull());
+            where.and(condition);
         }
 
         return where;

@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class Issue extends AbstractBaseEntity<String> {
     private Workflow workflow;
     private String milestoneId;
     private ZonedDateTime updatedAt;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id", referencedColumnName = "id")
     private IssueProgress progress;
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -62,6 +63,14 @@ public class Issue extends AbstractBaseEntity<String> {
         this.issueTagList = new ArrayList<>();
         for (int i = 0; i < tagIdList.size(); i++) {
             issueTagList.add(new IssueTag(this, tagIdList.get(i), i));
+        }
+    }
+
+    public void modifyByCodeFreeze(LocalDate codeFreezeDate) {
+        if (progress == null) {
+            progress = new IssueProgress(getId(), codeFreezeDate);
+        } else {
+            progress.modifyByCodeFreeze(codeFreezeDate);
         }
     }
 

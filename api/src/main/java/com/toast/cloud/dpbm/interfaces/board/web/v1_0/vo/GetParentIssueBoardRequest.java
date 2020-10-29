@@ -9,5 +9,6 @@ public class GetParentIssueBoardRequest {
 
     private String moduleId;
     private String milestoneId;
+    private Boolean showInProgress = Boolean.FALSE;
 
 }

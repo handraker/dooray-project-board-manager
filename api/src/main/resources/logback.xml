@@ -7,6 +7,13 @@
     <property name="FILE_LOG_PATTERN_CUSTOM"
               value="${FILE_LOG_PATTERN_CUSTOM:-%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} %5line : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
 
+    <springProfile name="alpha">
+        <property name="LOG_PATH" value="/home1/irteam/logs/tomcat" />
+    </springProfile>
+    <springProfile name="local">
+        <property name="LOG_PATH" value="/Users/nhn/dev/logs/tomcat" />
+    </springProfile>
+
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${CONSOLE_LOG_PATTERN_CUSTOM}</pattern>
@@ -20,7 +27,7 @@
             </evaluator>
             <onMatch>DENY</onMatch>
         </filter>
-        <File>/home1/irteam/logs/tomcat/dpbm.log</File>
+        <File>${LOG_PATH}/dpbm.log</File>
         <append>true</append>
         <encoder>
             <pattern>${FILE_LOG_PATTERN_CUSTOM}</pattern>

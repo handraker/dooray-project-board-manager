@@ -19,4 +19,4 @@ spring:
           in_clause_parameter_padding: true
 
 server:
-  port: 10081
+  port: 10085

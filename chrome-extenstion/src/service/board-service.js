@@ -4,12 +4,13 @@ import { DPBM_HOST } from '@/common/constant';
 import { map } from 'rxjs/operators';
 
 class BoardService {
-  getParentIssueBoard$({ projectId, milestoneId, moduleId }) {
+  getParentIssueBoard$({ projectId, milestoneId, moduleId, showInProgress }) {
     return rxios
       .get(`${DPBM_HOST}/dpbm/projects/${projectId}/boards/parent-issue`, {
         params: {
           moduleId,
           milestoneId,
+          showInProgress,
         },
       })
       .pipe(map((response) => response.data));

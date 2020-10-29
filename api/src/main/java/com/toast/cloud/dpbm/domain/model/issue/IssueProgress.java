@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,6 +36,13 @@ public class IssueProgress extends AbstractBaseEntity<String> {
         modify(issueProgressDTO);
     }
 
+    public IssueProgress(String issueId, LocalDate codeFreezeDate) {
+        generateId(issueId);
+        modifyByCodeFreeze(codeFreezeDate);
+        this.devStatusCode = DevStatusCode.WAITING;
+        this.deployStatusCode = DevStatusCode.WAITING;
+    }
+
     public IssueProgress modify(IssueProgressDTO issueProgressDTO) {
         this.devStatusCode = issueProgressDTO.getDevStatusCode();
         this.devStartDate = issueProgressDTO.getDevStartDate();
@@ -43,6 +51,39 @@ public class IssueProgress extends AbstractBaseEntity<String> {
         this.deployStartDate = issueProgressDTO.getDeployStartDate();
         this.deployEndDate = issueProgressDTO.getDeployEndDate();
         return this;
+    }
+
+    public void modifyByCodeFreeze(LocalDate codeFreezeDate) {
+        if (devStartDate == null) {
+            this.devStartDate = getDevStartDateByCodeFreezeDate(codeFreezeDate);
+            this.devEndDate = codeFreezeDate;
+        }
+
+        if (deployStartDate == null) {
+            this.deployStartDate = codeFreezeDate.plusDays(1);
+            this.deployEndDate = codeFreezeDate.plusWeeks(2);
+        }
+    }
+
+    private LocalDate getDevStartDateByCodeFreezeDate(LocalDate codeFreezeDate) {
+        LocalDate startDate = codeFreezeDate.minusWeeks(2)
+            .withDayOfMonth(1);
+        LocalDate expectedDevStartDate = codeFreezeDate.minusWeeks(2)
+            .plusDays(1);
+        int mondayCount = 0;
+        for (; startDate.isBefore(expectedDevStartDate); startDate = startDate.plusDays(1)) {
+            if (startDate.getDayOfWeek() == DayOfWeek.MONDAY) {
+                mondayCount++;
+            }
+        }
+
+        if (mondayCount < 2) {
+            return expectedDevStartDate.plusWeeks(1);
+        } else if (mondayCount > 2) {
+            return expectedDevStartDate.minusWeeks(1);
+        } else {
+            return expectedDevStartDate;
+        }
     }
 
 }

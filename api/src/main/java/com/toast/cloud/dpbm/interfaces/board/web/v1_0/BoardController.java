@@ -22,7 +22,10 @@ public class BoardController {
     @GetMapping("/dpbm/projects/{projectId}/boards/parent-issue")
     public ParentIssueBoard getParentIssueBoard(@PathVariable("projectId") String projectId,
                                                 @Valid @ModelAttribute GetParentIssueBoardRequest request) {
-        return parentIssueBoardAppService.getParentIssueBoard(projectId, request.getMilestoneId(), request.getModuleId());
+        return parentIssueBoardAppService.getParentIssueBoard(projectId,
+                                                              request.getMilestoneId(),
+                                                              request.getModuleId(),
+                                                              request.getShowInProgress());
     }
 
     @CrossOrigin("https://nhnent.dooray.com")

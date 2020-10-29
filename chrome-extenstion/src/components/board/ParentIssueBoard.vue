@@ -11,6 +11,7 @@
         <button
           :disabled="selectedItems.length === 0"
           class="btn btn-sm btn-danger"
+          @click="deleteIssue"
         >
           삭제
         </button>
@@ -143,6 +144,8 @@
 import qs from 'qs';
 import { mapGetters, mapState } from 'vuex';
 import { reduce } from 'lodash-es';
+import { from } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
 import { boardService } from '@/service/board-service';
 import { issueService } from '@/service/issue-service';
@@ -162,6 +165,10 @@ export default {
     moduleId: {
       required: true,
       type: String,
+    },
+    showInProgress: {
+      required: true,
+      type: Boolean,
     },
   },
   data() {
@@ -206,6 +213,9 @@ export default {
     },
   },
   watch: {
+    showInProgress() {
+      this.getParentIssueBoard();
+    },
     projectId: {
       immediate: true,
       handler(projectId) {
@@ -218,6 +228,26 @@ export default {
     },
   },
   methods: {
+    deleteIssue() {
+      if (confirm('선택된 이슈를 삭제 하시겠습니까?')) {
+        from(this.selectedItems)
+          .pipe(
+            mergeMap((boardItem) =>
+              issueService.deleteIssue$({
+                issueId: boardItem.parentIssue.issueId,
+              })
+            )
+          )
+          .subscribe({
+            complete() {
+              alert('선택된 이슈를 삭제 하였습니다.');
+            },
+            error() {
+              alert('선택된 이슈를 삭제 하지 못하였습니다.');
+            },
+          });
+      }
+    },
     moveIssue() {
       document
         .querySelector(
@@ -262,6 +292,7 @@ export default {
         .getParentIssueBoard$({
           projectId: this.projectId,
           moduleId: this.moduleId,
+          showInProgress: this.showInProgress,
         })
         .subscribe((response) => (this.boardItems = response.items));
     },

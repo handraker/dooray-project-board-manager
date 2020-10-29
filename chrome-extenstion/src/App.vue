@@ -24,6 +24,7 @@ import MemberBoardMain from '@/components/board/MemberBoardMain.vue';
 import MilestoneBoardMain from '@/components/board/MilestoneBoardMain.vue';
 import MilestoneParentIssueBoardMain from '@/components/board/MilestoneParentIssueBoardMain.vue';
 import ParentIssueBoardMain from '@/components/board/ParentIssueBoardMain.vue';
+import ParentIssueGanntMain from '@/components/board/ParentIssueGanntMain.vue';
 import Configuration from '@/components/config/Configuration.vue';
 
 export default {
@@ -42,6 +43,10 @@ export default {
         {
           title: 'Parent Issue Board',
           component: ParentIssueBoardMain,
+        },
+        {
+          title: 'Parent Issue Gannt',
+          component: ParentIssueGanntMain,
         },
         {
           title: 'Milestone Board',

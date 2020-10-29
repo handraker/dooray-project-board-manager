@@ -1,44 +1,46 @@
 {
-  "name": "chrome-extenstion",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "serve": "vue-cli-service serve src/test-main.js",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
-  },
-  "dependencies": {
-    "axios": "0.19.2",
-    "bootstrap": "4.5.0",
-    "bootstrap-vue": "2.15.0",
-    "core-js": "3.6.5",
-    "jquery": "^3.5.1",
-    "lodash-es": "^4.17.15",
-    "moment": "^2.27.0",
-    "popper.js": "1.16.1",
-    "rxjs": "6.6.0",
-    "vue": "2.6.11",
-    "vue-grid-layout": "2.3.7",
-    "vue-lazyload": "^1.3.3",
-    "vue-moment": "^4.1.0",
-    "vuedraggable": "2.24.0",
-    "vuex": "3.5.1"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "4.4.0",
-    "@vue/cli-plugin-eslint": "4.4.0",
-    "@vue/cli-service": "4.4.0",
-    "@vue/eslint-config-prettier": "4.0.1",
-    "babel-eslint": "10.1.0",
-    "eslint": "6.7.2",
-    "eslint-plugin-prettier": "3.1.4",
-    "eslint-plugin-vue": "6.2.2",
-    "prettier": "2.0.5",
-    "vue-template-compiler": "2.6.11"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "name": "chrome-extenstion",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "serve": "vue-cli-service serve src/test-main.js",
+        "build": "vue-cli-service build",
+        "lint": "vue-cli-service lint"
+    },
+    "dependencies": {
+        "axios": "0.19.2",
+        "bootstrap": "4.5.0",
+        "bootstrap-vue": "2.15.0",
+        "core-js": "3.6.5",
+        "gantt-elastic": "1.0.12",
+        "gantt-elastic-header": "0.1.11",
+        "jquery": "^3.5.1",
+        "lodash-es": "^4.17.15",
+        "moment": "^2.27.0",
+        "popper.js": "1.16.1",
+        "rxjs": "6.6.0",
+        "vue": "2.6.11",
+        "vue-grid-layout": "2.3.7",
+        "vue-lazyload": "^1.3.3",
+        "vue-moment": "^4.1.0",
+        "vuedraggable": "2.24.0",
+        "vuex": "3.5.1"
+    },
+    "devDependencies": {
+        "@vue/cli-plugin-babel": "4.4.0",
+        "@vue/cli-plugin-eslint": "4.4.0",
+        "@vue/cli-service": "4.4.0",
+        "@vue/eslint-config-prettier": "4.0.1",
+        "babel-eslint": "10.1.0",
+        "eslint": "6.7.2",
+        "eslint-plugin-prettier": "3.1.4",
+        "eslint-plugin-vue": "6.2.2",
+        "prettier": "2.0.5",
+        "vue-template-compiler": "2.6.11"
+    },
+    "browserslist": [
+        "> 1%",
+        "last 2 versions",
+        "not dead"
+    ]
 }

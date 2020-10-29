@@ -3883,7 +3883,7 @@ functional-red-black-tree@^1.0.1:
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
 
-gantt-elastic-header@^0.1.11:
+gantt-elastic-header@0.1.11:
   version "0.1.11"
   resolved "https://registry.yarnpkg.com/gantt-elastic-header/-/gantt-elastic-header-0.1.11.tgz#8b9fec8e51709b82ff59a0386f066850ae69c6d1"
   integrity sha512-mDzraF/ZxrY9Pmp2Kjb1Hm8pFSeH2Ze5S0Lw/qiW63qyYxj0uLMp8w6xJq4rt2aB0lcHhonf0YMOjCjAk1WZfQ==
@@ -3892,7 +3892,7 @@ gantt-elastic-header@^0.1.11:
     vue-slider-component "^3.0.31"
     vue-switches "^2.0.1"
 
-gantt-elastic@^1.0.12:
+gantt-elastic@1.0.12:
   version "1.0.12"
   resolved "https://registry.yarnpkg.com/gantt-elastic/-/gantt-elastic-1.0.12.tgz#d95cd3a750712fa56f4a12dca807a1c9bf10fe8a"
   integrity sha512-PZHbADMGlVcTHKVqtvLNg8bvUGqeeSmDMVCQscyVBxNKd4Wwmvht4eNiTlasLW2ceufLN7BKziGZ9AJP28nJiw==

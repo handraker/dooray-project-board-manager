@@ -34,6 +34,10 @@ public class ParentIssueBoardItem implements Comparable {
     @Override
     public int compareTo(Object o) {
         ParentIssueBoardItem other = (ParentIssueBoardItem)o;
+        if (parentIssue.getDevStartDate() == null && other.parentIssue.getDevStartDate() == null) {
+            return 0;
+        }
+
         if (parentIssue.getDevStartDate() == null) {
             return 1;
         }

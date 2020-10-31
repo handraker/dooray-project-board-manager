@@ -1,6 +1,6 @@
 <template>
   <div>
-    <parent-issue-gannt
+    <parent-issue-gantt
       v-for="module in modules"
       :key="module.id"
       :module-id="module.id"
@@ -11,11 +11,11 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
 
-import ParentIssueGannt from '@/components/board/ParentIssueGannt';
+import ParentIssueGantt from '@/components/board/ParentIssueGantt';
 
 export default {
   components: {
-    ParentIssueGannt,
+    ParentIssueGantt,
   },
   data() {
     return {};

@@ -9,28 +9,28 @@
       </h4>
     </div>
     <div class="content">
-      <table class="table">
+      <table class="table table-bordered gantt">
         <thead>
           <tr>
-            <th rowspan="2">이슈</th>
+            <th rowspan="2" style="min-width: 500px;">이슈</th>
             <th
-              class="text-center"
               v-for="(month, no) in months"
               :key="no"
               :colspan="month.weekCount"
+              class="text-center"
             >
               {{ month.year }}년 {{ month.month }}월
             </th>
           </tr>
           <tr>
-            <th v-for="(week, no) in weeks" :key="no">
+            <th v-for="(week, no) in weeks" :key="no" class="week">
               {{ week.weekOfMonth }}
             </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="boardItem in boardItems" :key="boardItem.id">
-            <td>
+            <td class="issue">
               <a
                 :href="`/project/${projectId}/${boardItem.parentIssue.issueId}`"
                 @click="moveIssue"
@@ -45,6 +45,7 @@
                 <span class="v2-icons-open-new"></span>
               </button>
             </td>
+            <td class="week" v-for="(week, no) in weeks" :key="no"></td>
           </tr>
         </tbody>
       </table>
@@ -164,6 +165,7 @@ export default {
           projectId: this.projectId,
           moduleId: this.moduleId,
           showInProgress: true,
+          withStatistics: false,
         })
         .subscribe((response) => (this.boardItems = response.items));
     },
@@ -201,5 +203,18 @@ th:first-child,
 td:first-child {
   position: sticky;
   left: 0px;
+}
+
+table.gantt td,
+table.gantt th {
+  padding: 2px !important;
+}
+
+td.issue {
+  background-color: white;
+}
+
+th.week {
+  width: 15px;
 }
 </style>

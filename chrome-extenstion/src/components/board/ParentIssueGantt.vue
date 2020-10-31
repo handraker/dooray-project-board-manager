@@ -12,7 +12,11 @@
       <table class="table table-bordered gantt">
         <thead>
           <tr>
-            <th rowspan="2" style="min-width: 500px;">이슈</th>
+            <th class="align-middle" rowspan="2" style="min-width: 500px;">
+              이슈
+            </th>
+            <th class="align-middle" rowspan="2">개발 기한</th>
+            <th class="align-middle" rowspan="2">배포 기한</th>
             <th
               v-for="(month, no) in months"
               :key="no"
@@ -45,11 +49,36 @@
                 <span class="v2-icons-open-new"></span>
               </button>
             </td>
+            <td>
+              <date-progress-bar
+                :from="boardItem.devDateProgress.from"
+                :to="boardItem.devDateProgress.to"
+                :total-working-days="boardItem.devDateProgress.totalWorkingDays"
+                :remaining-working-days="
+                  boardItem.devDateProgress.remainingWorkingDays
+                "
+                @change="changeDevDate($event, boardItem.parentIssue)"
+              />
+            </td>
+            <td>
+              <date-progress-bar
+                :from="boardItem.deployDateProgress.from"
+                :to="boardItem.deployDateProgress.to"
+                :total-working-days="
+                  boardItem.deployDateProgress.totalWorkingDays
+                "
+                :remaining-working-days="
+                  boardItem.deployDateProgress.remainingWorkingDays
+                "
+                @change="changeDeployDate($event, boardItem.parentIssue)"
+              />
+            </td>
             <td
               class="week"
               v-for="(week, no) in weeks"
               :key="no"
               :style="getWeekStyle(week, boardItem)"
+              :class="{ today: isTodayInWeek(week) }"
             ></td>
           </tr>
         </tbody>
@@ -63,8 +92,11 @@ import moment from 'moment';
 import { mapGetters, mapState } from 'vuex';
 
 import { boardService } from '@/service/board-service';
+import DateProgressBar from '@/components/progress-bar/DateProgressBar.vue';
+import { issueService } from '@/service/issue-service';
 
 export default {
+  components: { DateProgressBar },
   props: {
     moduleId: {
       required: true,
@@ -73,8 +105,8 @@ export default {
   },
   data() {
     return {
-      ganntStartDate: moment().add(-1, 'month'),
-      ganntEndDate: moment().add(1, 'year'),
+      ganntStartDate: moment().add(-2, 'month').date(1),
+      ganntEndDate: moment().add(1, 'year').add(2, 'month'),
       boardItems: [],
     };
   },
@@ -144,13 +176,17 @@ export default {
     },
   },
   created() {
-    if (this.ganntStartDate.day() != 1) {
+    if (this.weekOfMonth(this.ganntStartDate) != 1) {
       this.ganntStartDate = this.ganntStartDate.add(7, 'd').day(1);
     }
 
     this.getParentIssueBoard();
   },
   methods: {
+    isTodayInWeek(week) {
+      const today = moment().day(1);
+      return today.isSameOrAfter(week.start) && today.isSameOrBefore(week.end);
+    },
     isParentIssueInWeek(week, boardItem) {
       if (
         boardItem.devDateProgress.from == null ||
@@ -206,6 +242,15 @@ export default {
         )
         .click();
     },
+    changeDeployDate(date, parentIssue) {
+      issueService
+        .modifyProgress$({
+          ...parentIssue,
+          deployStartDate: date.from,
+          deployEndDate: date.to,
+        })
+        .subscribe(() => this.getParentIssueBoard());
+    },
     openIssuePopup(issueId) {
       const width = 800;
       const height = 800;
@@ -233,6 +278,7 @@ th:first-child,
 td:first-child {
   position: sticky;
   left: 0px;
+  z-index: 10000;
 }
 
 table.gantt td {
@@ -242,5 +288,9 @@ table.gantt td {
 
 td.issue {
   background-color: white;
+}
+
+td.today {
+  border-right: 3px solid rgb(28, 31, 59);
 }
 </style>

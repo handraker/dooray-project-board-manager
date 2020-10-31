@@ -45,7 +45,12 @@
                 <span class="v2-icons-open-new"></span>
               </button>
             </td>
-            <td class="week" v-for="(week, no) in weeks" :key="no"></td>
+            <td
+              class="week"
+              v-for="(week, no) in weeks"
+              :key="no"
+              :style="getWeekStyle(week, boardItem)"
+            ></td>
           </tr>
         </tbody>
       </table>
@@ -146,6 +151,31 @@ export default {
     this.getParentIssueBoard();
   },
   methods: {
+    isParentIssueInWeek(week, boardItem) {
+      if (
+        boardItem.devDateProgress.from == null ||
+        boardItem.deployDateProgress.to == null
+      ) {
+        return false;
+      }
+
+      if (
+        moment(boardItem.devDateProgress.from).isAfter(week.end) ||
+        moment(boardItem.deployDateProgress.to).isBefore(week.start)
+      ) {
+        return false;
+      }
+      return true;
+    },
+    getWeekStyle(week, boardItem) {
+      if (this.isParentIssueInWeek(week, boardItem)) {
+        return {
+          'background-color': this.moduleColor,
+        };
+      } else {
+        return {};
+      }
+    },
     weekOfMonth(date) {
       let week = 0;
       for (
@@ -205,16 +235,12 @@ td:first-child {
   left: 0px;
 }
 
-table.gantt td,
-table.gantt th {
-  padding: 2px !important;
+table.gantt td {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 td.issue {
   background-color: white;
-}
-
-th.week {
-  width: 15px;
 }
 </style>

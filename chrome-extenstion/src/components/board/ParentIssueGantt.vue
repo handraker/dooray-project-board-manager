@@ -12,7 +12,11 @@
       <table class="table table-bordered gantt">
         <thead>
           <tr>
-            <th class="align-middle" rowspan="2" style="min-width: 500px;">
+            <th
+              class="align-middle fixed-first-column"
+              rowspan="2"
+              style="min-width: 500px;"
+            >
               이슈
             </th>
             <th class="align-middle" rowspan="2">개발 기한</th>
@@ -36,7 +40,7 @@
         </thead>
         <tbody>
           <tr v-for="boardItem in boardItems" :key="boardItem.id">
-            <td class="issue">
+            <td class="issue fixed-first-column">
               <a
                 :href="`/project/${projectId}/${boardItem.parentIssue.issueId}`"
                 @click="moveIssue"
@@ -76,10 +80,10 @@
               />
             </td>
             <td
-              class="week"
               v-for="(week, no) in weeks"
               :key="no"
               :style="getWeekStyle(week, boardItem)"
+              class="week"
               :class="{ today: isTodayInWeek(week) }"
             ></td>
             <td>
@@ -300,20 +304,16 @@ table {
   overflow-y: scroll;
 }
 
-th:first-child,
-td:first-child {
+.fixed-first-column {
   position: sticky;
   left: 0px;
   z-index: 10000;
+  background-color: white;
 }
 
 table.gantt td {
   padding-top: 0;
   padding-bottom: 0;
-}
-
-td.issue {
-  background-color: white;
 }
 
 td.today {

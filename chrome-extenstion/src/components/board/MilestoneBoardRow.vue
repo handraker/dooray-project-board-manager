@@ -1,5 +1,5 @@
 <template>
-  <tr>
+  <tr v-if="countStatistics.items.length > 0">
     <td>
       <div v-if="module" class="inline-box" title="태그">
         <span class="tag-group">

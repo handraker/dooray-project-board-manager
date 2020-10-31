@@ -25,7 +25,8 @@ public class BoardController {
         return parentIssueBoardAppService.getParentIssueBoard(projectId,
                                                               request.getMilestoneId(),
                                                               request.getModuleId(),
-                                                              request.getShowInProgress());
+                                                              request.getShowInProgress(),
+                                                              request.getWithStatistics());
     }
 
     @CrossOrigin("https://nhnent.dooray.com")

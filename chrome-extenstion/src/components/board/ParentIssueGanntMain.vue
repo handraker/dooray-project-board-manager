@@ -12,22 +12,6 @@ import { filter, map, mergeMap, toArray } from 'rxjs/operators';
 
 import { boardService } from '@/service/board-service';
 
-function getDate(hours) {
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth();
-  const currentDay = currentDate.getDate();
-  const timeStamp = new Date(
-    currentYear,
-    currentMonth,
-    currentDay,
-    0,
-    0,
-    0
-  ).getTime();
-  return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
-}
-
 export default {
   components: {
     GanttElastic,
@@ -96,6 +80,7 @@ export default {
         .getParentIssueBoard$({
           projectId: this.projectId,
           showInProgress: true,
+          withStatistics: false,
         })
         .pipe(
           mergeMap((response) => response.items),

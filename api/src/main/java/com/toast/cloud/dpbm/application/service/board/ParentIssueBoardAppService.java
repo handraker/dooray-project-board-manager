@@ -19,7 +19,11 @@ public class ParentIssueBoardAppService {
 
     private final IssueRepository issueRepository;
 
-    public ParentIssueBoard getParentIssueBoard(String projectId, String milestoneId, String moduleId, boolean showInProgress) {
+    public ParentIssueBoard getParentIssueBoard(String projectId,
+                                                String milestoneId,
+                                                String moduleId,
+                                                boolean showInProgress,
+                                                boolean withStatistics) {
         Iterable<Issue> iterable = issueRepository.findParentIssue(IssuePredicate.builder()
                                                                        .projectId(projectId)
                                                                        .moduleId(moduleId)
@@ -31,9 +35,13 @@ public class ParentIssueBoardAppService {
                 Predicate predicate = IssuePredicate.builder()
                     .parentIssueId(parentIssue.getId())
                     .build();
-                return new ParentIssueBoardItem(parentIssue,
-                                                issueRepository.getMandaysIssueWorkflowStatistics(predicate),
-                                                issueRepository.getCountIssueWorkflowStatistics(predicate));
+                if (withStatistics) {
+                    return new ParentIssueBoardItem(parentIssue,
+                                                    issueRepository.getMandaysIssueWorkflowStatistics(predicate),
+                                                    issueRepository.getCountIssueWorkflowStatistics(predicate));
+                } else {
+                    return new ParentIssueBoardItem(parentIssue);
+                }
             })
             .sorted()
             .collect(Collectors.toList());

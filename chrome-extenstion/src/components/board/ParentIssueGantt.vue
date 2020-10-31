@@ -25,6 +25,8 @@
             >
               {{ month.year }}년 {{ month.month }}월
             </th>
+            <th class="align-middle" rowspan="2">개발 기한</th>
+            <th class="align-middle" rowspan="2">배포 기한</th>
           </tr>
           <tr>
             <th v-for="(week, no) in weeks" :key="no" class="week">
@@ -80,6 +82,30 @@
               :style="getWeekStyle(week, boardItem)"
               :class="{ today: isTodayInWeek(week) }"
             ></td>
+            <td>
+              <date-progress-bar
+                :from="boardItem.devDateProgress.from"
+                :to="boardItem.devDateProgress.to"
+                :total-working-days="boardItem.devDateProgress.totalWorkingDays"
+                :remaining-working-days="
+                  boardItem.devDateProgress.remainingWorkingDays
+                "
+                @change="changeDevDate($event, boardItem.parentIssue)"
+              />
+            </td>
+            <td>
+              <date-progress-bar
+                :from="boardItem.deployDateProgress.from"
+                :to="boardItem.deployDateProgress.to"
+                :total-working-days="
+                  boardItem.deployDateProgress.totalWorkingDays
+                "
+                :remaining-working-days="
+                  boardItem.deployDateProgress.remainingWorkingDays
+                "
+                @change="changeDeployDate($event, boardItem.parentIssue)"
+              />
+            </td>
           </tr>
         </tbody>
       </table>

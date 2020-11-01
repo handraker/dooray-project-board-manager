@@ -138,6 +138,9 @@ export default {
       ganntStartDate: moment().add(-2, 'month').date(1),
       ganntEndDate: moment().add(1, 'year').add(2, 'month'),
       boardItems: [],
+      isDown: false,
+      startX: 0,
+      scrollLeft: 0,
     };
   },
   computed: {
@@ -212,21 +215,60 @@ export default {
 
     this.getParentIssueBoard();
   },
+  mounted() {
+    const contentDiv = this.$el.querySelector('.content');
+    contentDiv.addEventListener('mousedown', (e) => {
+      this.isDown = true;
+      this.startX = e.pageX - contentDiv.offsetLeft;
+      this.scrollLeft = contentDiv.scrollLeft;
+    });
+    contentDiv.addEventListener('mouseleave', () => {
+      this.isDown = false;
+      contentDiv.classList.remove('active');
+    });
+    contentDiv.addEventListener('mouseup', () => {
+      this.isDown = false;
+      contentDiv.classList.remove('active');
+    });
+    contentDiv.addEventListener('mousemove', (e) => {
+      if (!this.isDown) return;
+      e.preventDefault();
+      const x = e.pageX - contentDiv.offsetLeft;
+      const walk = x - this.startX;
+      contentDiv.scrollLeft = this.scrollLeft - walk;
+    });
+  },
   methods: {
     isTodayInWeek(week) {
       const today = moment().day(1);
       return today.isSameOrAfter(week.start) && today.isSameOrBefore(week.end);
     },
-    isParentIssueInWeek(week, boardItem) {
+    isDevDateInWeek(week, boardItem) {
       if (
         boardItem.devDateProgress.from == null ||
-        boardItem.deployDateProgress.to == null
+        boardItem.devDateProgress.to == null
       ) {
         return false;
       }
 
       if (
         moment(boardItem.devDateProgress.from).isAfter(week.end) ||
+        moment(boardItem.devDateProgress.to).isBefore(week.start)
+      ) {
+        return false;
+      }
+      return true;
+    },
+    isDeployDateInWeek(week, boardItem) {
+      if (
+        boardItem.deployDateProgress.from == null ||
+        boardItem.deployDateProgress.to == null
+      ) {
+        return false;
+      }
+
+      if (
+        moment(boardItem.deployDateProgress.from).isAfter(week.end) ||
         moment(boardItem.deployDateProgress.to).isBefore(week.start)
       ) {
         return false;
@@ -234,9 +276,14 @@ export default {
       return true;
     },
     getWeekStyle(week, boardItem) {
-      if (this.isParentIssueInWeek(week, boardItem)) {
+      if (this.isDevDateInWeek(week, boardItem)) {
         return {
           'background-color': this.moduleColor,
+        };
+      } else if (this.isDeployDateInWeek(week, boardItem)) {
+        return {
+          'background-color': this.moduleColor,
+          opacity: 0.5,
         };
       } else {
         return {};

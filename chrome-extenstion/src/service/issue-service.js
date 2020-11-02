@@ -4,10 +4,11 @@ import { DPBM_HOST } from '@/common/constant';
 import { map } from 'rxjs/operators';
 
 class IssueService {
-  getIssues$({ memberId, workflowTypeCode, from, to }) {
+  getIssues$({ projectId, memberId, workflowTypeCode, from, to }) {
     return rxios
       .get(`${DPBM_HOST}/dpbm/issue`, {
         params: {
+          projectId,
           memberId,
           workflowTypeCode,
           from,

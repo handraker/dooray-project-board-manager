@@ -64,6 +64,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 import { issueService } from '@/service/issue-service';
 import MemberBoardHorizontalTable from '@/components/board/MemberBoardHorizontalTable.vue';
 import MemberBoardVerticalTable from '@/components/board/MemberBoardVerticalTable.vue';
@@ -87,6 +89,9 @@ export default {
       type: String,
       required: true,
     },
+  },
+  computed: {
+    ...mapState('project', ['projectId']),
   },
   data() {
     return {
@@ -113,6 +118,7 @@ export default {
     getIssueList() {
       issueService
         .getIssues$({
+          projectId: this.projectId,
           memberId: this.member.id,
           from: '2000-01-01',
           to: '9999-12-31',
@@ -121,6 +127,7 @@ export default {
         .subscribe((issueList) => (this.registeredIssueList = issueList));
       issueService
         .getIssues$({
+          projectId: this.projectId,
           memberId: this.member.id,
           from: this.from,
           to: this.to,
@@ -129,6 +136,7 @@ export default {
         .subscribe((issueList) => (this.workingIssueList = issueList));
       issueService
         .getIssues$({
+          projectId: this.projectId,
           memberId: this.member.id,
           from: this.from,
           to: this.to,

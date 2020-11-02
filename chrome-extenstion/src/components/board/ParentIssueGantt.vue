@@ -319,6 +319,15 @@ export default {
         )
         .click();
     },
+    changeDevDate(date, parentIssue) {
+      issueService
+        .modifyProgress$({
+          ...parentIssue,
+          devStartDate: date.from,
+          devEndDate: date.to,
+        })
+        .subscribe(() => this.getParentIssueBoard());
+    },
     changeDeployDate(date, parentIssue) {
       issueService
         .modifyProgress$({

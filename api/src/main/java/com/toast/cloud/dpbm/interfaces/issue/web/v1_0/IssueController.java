@@ -48,6 +48,7 @@ public class IssueController {
     @GetMapping("/dpbm/issue")
     public List<IssueDTO> getIssues(@Valid @ModelAttribute GetIssueRequest request) {
         return issueAppService.getIssues(IssuePredicate.builder()
+                                             .projectId(request.getProjectId())
                                              .memberId(request.getMemberId())
                                              .from(request.getFrom().atStartOfDay(ZoneId.systemDefault()))
                                              .to(request.getTo().atStartOfDay(ZoneId.systemDefault()))

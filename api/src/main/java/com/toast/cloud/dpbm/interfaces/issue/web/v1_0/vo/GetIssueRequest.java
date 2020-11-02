@@ -13,6 +13,8 @@ import java.time.LocalDate;
 public class GetIssueRequest {
 
     @NotNull
+    private String projectId;
+    @NotNull
     private String memberId;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull

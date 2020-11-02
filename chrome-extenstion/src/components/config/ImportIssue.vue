@@ -22,7 +22,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex';
-import { map, mergeMap, tap, toArray } from 'rxjs/operators';
+import { filter, map, mergeMap, tap, toArray } from 'rxjs/operators';
 
 import { doorayService } from '@/service/dooray-service';
 import { issueService } from '@/service/issue-service';
@@ -97,7 +97,9 @@ export default {
           tap(() => (this.importedCount += 1)),
           mergeMap((content) =>
             issueService.deleteIssue$({ issueId: content.id }).pipe(
-              mergeMap(() => issueService.create$([this.getIssue(content)])),
+              map(() => this.getIssue(content)),
+              filter((issue) => issue.moduleId != null),
+              mergeMap((issue) => issueService.create$([issue])),
               mergeMap(() =>
                 issueService.deleteChildIssue$({ issueId: content.id })
               ),

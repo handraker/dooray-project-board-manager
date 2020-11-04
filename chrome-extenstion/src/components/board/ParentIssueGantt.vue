@@ -9,7 +9,7 @@
       </h4>
     </div>
     <div class="content">
-      <table class="table table-bordered gantt">
+      <table class="table table-bordered gantt table-hover">
         <thead>
           <tr>
             <th

@@ -14,11 +14,18 @@
             취소
           </button>
           <button
-            class="float-right btn btn-sm btn-primary"
+            class="float-right btn btn-sm btn-primary ml-1"
             :disabled="!isValidRange"
             @click="apply"
           >
             적용
+          </button>
+          <button
+            class="float-right btn btn-sm btn-danger"
+            :disabled="!isValidRange"
+            @click="reset"
+          >
+            초기화
           </button>
         </div>
       </div>
@@ -127,6 +134,13 @@ export default {
       }
       this.isEditMode = true;
     },
+    reset() {
+      this.$emit('change', {
+        from: null,
+        to: null,
+      });
+      this.isEditMode = false;
+    },
     apply() {
       this.$emit('change', {
         from: this.fromDate,
@@ -151,9 +165,11 @@ export default {
   font-family: 'Nanum Gothic', Meiryo, 'Noto Sans JP', sans-serif,
     'Lucida Sans Unicode', arial;
 }
+
 .date-progress-bar * {
   font-size: 12px !important;
 }
+
 .date-progress-bar .progress {
   cursor: pointer;
 }

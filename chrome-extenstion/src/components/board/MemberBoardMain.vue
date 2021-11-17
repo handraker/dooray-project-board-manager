@@ -50,7 +50,7 @@ export default {
   components: { MemberBoard },
   data() {
     return {
-      from: moment().subtract(10, 'd').format('YYYY-MM-DD'),
+      from: moment().subtract(5, 'd').format('YYYY-MM-DD'),
       to: moment().add(1, 'd').format('YYYY-MM-DD'),
       viewMode: 'HORIZONTAL',
     };

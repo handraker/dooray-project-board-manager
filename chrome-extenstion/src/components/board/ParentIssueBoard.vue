@@ -239,7 +239,8 @@ export default {
             )
           )
           .subscribe({
-            complete() {
+            complete: () => {
+              this.getParentIssueBoard();
               alert('선택된 이슈를 삭제 하였습니다.');
             },
             error() {

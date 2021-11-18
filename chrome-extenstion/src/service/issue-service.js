@@ -58,6 +58,20 @@ class IssueService {
       .delete(`${DPBM_HOST}/dpbm/issue/${issueId}/child-issue`)
       .pipe(map((response) => response.data));
   }
+
+  startTimer({ issueId, moduleName }) {
+    return rxios
+      .post(`${DPBM_HOST}//dpbm/issue/${issueId}/start-timer`, {
+        moduleName,
+      })
+      .pipe(map((response) => response.data));
+  }
+
+  stopTimer() {
+    return rxios
+      .post(`${DPBM_HOST}//dpbm/issue/stop-timer`)
+      .pipe(map((response) => response.data));
+  }
 }
 
 export const issueService = new IssueService();

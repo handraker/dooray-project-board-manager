@@ -1,5 +1,6 @@
 package com.toast.cloud.dpbm.application.model.issue;
 
+import com.toast.cloud.clockify.domain.model.timeentry.ClockifyTimeEntry;
 import com.toast.cloud.dpbm.domain.model.issue.Issue;
 import com.toast.cloud.dpbm.domain.model.issue.IssueTag;
 import com.toast.cloud.dpbm.domain.model.issue.code.WorkflowTypeCode;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
@@ -32,8 +34,10 @@ public class IssueDTO {
     private String milestoneId;
     private List<String> tagIdList;
     private ZonedDateTime updatedAt;
+    private boolean inProgress = false;
+    private ZonedDateTime startedAt;
 
-    public IssueDTO(Issue issue) {
+    public IssueDTO(Issue issue, Optional<ClockifyTimeEntry> timeEntryOptional) {
         this.issueId = issue.getId();
         this.parentIssueId = issue.getParentIssueId();
         this.projectId = issue.getProjectId();
@@ -52,6 +56,12 @@ public class IssueDTO {
             .map(IssueTag::getTagId)
             .collect(Collectors.toList());
         this.updatedAt = issue.getUpdatedAt();
+        timeEntryOptional
+            .filter(timeEntry -> timeEntry.getDescription().startsWith("" + issueNo))
+            .ifPresent(timeEntry -> {
+                this.inProgress = true;
+                this.startedAt = timeEntry.getStart();
+            });
     }
 
     @Builder

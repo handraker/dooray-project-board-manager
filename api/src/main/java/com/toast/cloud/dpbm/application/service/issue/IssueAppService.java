@@ -1,28 +1,46 @@
 package com.toast.cloud.dpbm.application.service.issue;
 
 import com.querydsl.core.types.Predicate;
+import com.toast.cloud.clockify.domain.model.timeentry.ClockifyTimeEntry;
+import com.toast.cloud.clockify.domain.service.timeentry.ClockifyTimeEntryService;
 import com.toast.cloud.dpbm.application.model.issue.IssueDTO;
 import com.toast.cloud.dpbm.application.model.issue.IssueProgressDTO;
 import com.toast.cloud.dpbm.domain.model.issue.*;
+import com.toast.cloud.dpbm.domain.service.issue.IssueService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
 public class IssueAppService {
 
+    private final IssueService issueService;
     private final IssueRepository issueRepository;
     private final IssueProgressRepository issueProgressRepository;
+    private final ClockifyTimeEntryService clockifyTimeEntryService;
 
-    public List<IssueDTO> getIssues(Predicate predicate) {
+    public List<IssueDTO> getIssues(String memberId, Predicate predicate) {
+        Optional<ClockifyTimeEntry> timeEntryOptional = Optional.ofNullable(memberId)
+            .filter(id -> id.equals("1387695629192606464"))
+            .flatMap(id -> clockifyTimeEntryService.getCurrentTimeEntry());
+
         return issueRepository.findByPredicate(predicate)
             .stream()
-            .map(IssueDTO::new)
+            .map(issue -> new IssueDTO(issue, timeEntryOptional))
             .collect(Collectors.toList());
+    }
+
+    public void startTimer(String issueId, String moduleName) {
+        issueService.startTimer(issueId, moduleName);
+    }
+
+    public void stopTimer() {
+        clockifyTimeEntryService.stopTimer();
     }
 
     @Transactional

@@ -74,4 +74,8 @@ public class Issue extends AbstractBaseEntity<String> {
         }
     }
 
+    public String getClockifyDescription() {
+        return String.format("%d %s", issueNo, title);
+    }
+
 }

@@ -181,12 +181,7 @@ export default {
   },
   computed: {
     ...mapState('project', ['projectId']),
-    ...mapGetters('project', [
-      'getModule',
-      'getModuleId',
-      'getWorkingTypeId',
-      'getMandays',
-    ]),
+    ...mapGetters('project', ['getModule', 'getWorkingTypeId', 'getMandays']),
     ...mapState('dooray', ['tags', 'milestones']),
     ...mapGetters('dooray', ['getMilestone']),
     progress() {

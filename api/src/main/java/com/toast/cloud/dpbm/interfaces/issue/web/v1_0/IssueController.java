@@ -6,6 +6,7 @@ import com.toast.cloud.dpbm.domain.model.issue.IssuePredicate;
 import com.toast.cloud.dpbm.interfaces.issue.web.v1_0.vo.CreateIssueRequest;
 import com.toast.cloud.dpbm.interfaces.issue.web.v1_0.vo.GetIssueRequest;
 import com.toast.cloud.dpbm.interfaces.issue.web.v1_0.vo.ModifyIssueProgressRequest;
+import com.toast.cloud.dpbm.interfaces.issue.web.v1_0.vo.StartTimerRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,18 @@ public class IssueController {
     @PostMapping("/dpbm/issue")
     public void createIssue(@Valid @RequestBody CreateIssueRequest request) {
         issueAppService.create(request.getIssueDTOList());
+    }
+
+    @CrossOrigin("https://nhnent.dooray.com")
+    @PostMapping("/dpbm/issue/stop-timer")
+    public void stopTimer() {
+        issueAppService.stopTimer();
+    }
+
+    @CrossOrigin("https://nhnent.dooray.com")
+    @PostMapping("/dpbm/issue/{issueId}/start-timer")
+    public void startTimer(@PathVariable("issueId") String issueId, @Valid @RequestBody StartTimerRequest request) {
+        issueAppService.startTimer(issueId, request.getModuleName());
     }
 
     @CrossOrigin("https://nhnent.dooray.com")
@@ -47,13 +60,13 @@ public class IssueController {
     @CrossOrigin("https://nhnent.dooray.com")
     @GetMapping("/dpbm/issue")
     public List<IssueDTO> getIssues(@Valid @ModelAttribute GetIssueRequest request) {
-        return issueAppService.getIssues(IssuePredicate.builder()
-                                             .projectId(request.getProjectId())
-                                             .memberId(request.getMemberId())
-                                             .from(request.getFrom().atStartOfDay(ZoneId.systemDefault()))
-                                             .to(request.getTo().atStartOfDay(ZoneId.systemDefault()))
-                                             .workflowTypeCode(request.getWorkflowTypeCode())
-                                             .build());
+        return issueAppService.getIssues(request.getMemberId(), IssuePredicate.builder()
+            .projectId(request.getProjectId())
+            .memberId(request.getMemberId())
+            .from(request.getFrom().atStartOfDay(ZoneId.systemDefault()))
+            .to(request.getTo().atStartOfDay(ZoneId.systemDefault()))
+            .workflowTypeCode(request.getWorkflowTypeCode())
+            .build());
     }
 
 }

@@ -90,15 +90,15 @@ export default {
       required: true,
     },
   },
-  computed: {
-    ...mapState('project', ['projectId']),
-  },
   data() {
     return {
       registeredIssueList: [],
       workingIssueList: [],
       closedIssueList: [],
     };
+  },
+  computed: {
+    ...mapState('project', ['projectId']),
   },
   watch: {
     from: {
@@ -113,6 +113,9 @@ export default {
         this.getIssueList();
       },
     },
+  },
+  mounted() {
+    console.log('mounted');
   },
   methods: {
     getIssueList() {

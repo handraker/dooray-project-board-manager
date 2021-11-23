@@ -61,7 +61,7 @@ public class IssueProgress extends AbstractBaseEntity<String> {
                 .withDayOfMonth(1)
                 .with(firstInMonth(DayOfWeek.MONDAY))
                 .plusWeeks(1)
-                .plusDays(1);
+                .plusDays(2);
             this.devEndDate = codeFreezeDate;
         }
 

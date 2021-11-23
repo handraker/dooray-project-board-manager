@@ -117,6 +117,7 @@ export default {
   destroyed() {
     if (this.timerId !== null) {
       clearTimeout(this.timerId);
+      nhn;
     }
   },
   methods: {

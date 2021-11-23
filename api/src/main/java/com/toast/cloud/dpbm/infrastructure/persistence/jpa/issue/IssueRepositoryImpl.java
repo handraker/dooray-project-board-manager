@@ -31,6 +31,7 @@ public class IssueRepositoryImpl extends QuerydslRepositorySupport implements Is
             .leftJoin(issue.issueTagList, issueTag)
             .fetchJoin()
             .where(issue.parentIssueId.isNull().and(predicate))
+            .orderBy(issue.moduleId.asc(), issue.id.asc())
             .fetch();
     }
 

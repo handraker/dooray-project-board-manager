@@ -12,6 +12,8 @@ import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
+import static java.time.temporal.TemporalAdjusters.firstInMonth;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "dpbm_issue_progress")
@@ -55,34 +57,18 @@ public class IssueProgress extends AbstractBaseEntity<String> {
 
     public void modifyByCodeFreeze(LocalDate codeFreezeDate) {
         if (devStartDate == null) {
-            this.devStartDate = getDevStartDateByCodeFreezeDate(codeFreezeDate);
+            this.devStartDate = codeFreezeDate
+                .withDayOfMonth(1)
+                .with(firstInMonth(DayOfWeek.MONDAY))
+                .plusWeeks(1)
+                .plusDays(1);
             this.devEndDate = codeFreezeDate;
         }
 
         if (deployStartDate == null) {
-            this.deployStartDate = codeFreezeDate.plusDays(1);
-            this.deployEndDate = codeFreezeDate.plusWeeks(2);
-        }
-    }
-
-    private LocalDate getDevStartDateByCodeFreezeDate(LocalDate codeFreezeDate) {
-        LocalDate startDate = codeFreezeDate.minusWeeks(2)
-            .withDayOfMonth(1);
-        LocalDate expectedDevStartDate = codeFreezeDate.minusWeeks(2)
-            .plusDays(1);
-        int mondayCount = 0;
-        for (; startDate.isBefore(expectedDevStartDate); startDate = startDate.plusDays(1)) {
-            if (startDate.getDayOfWeek() == DayOfWeek.MONDAY) {
-                mondayCount++;
-            }
-        }
-
-        if (mondayCount < 2) {
-            return expectedDevStartDate.plusWeeks(1);
-        } else if (mondayCount > 2) {
-            return expectedDevStartDate.minusWeeks(1);
-        } else {
-            return expectedDevStartDate;
+            this.deployStartDate = codeFreezeDate.plusDays(3);
+            this.deployEndDate = deployStartDate.plusWeeks(2)
+                .plusDays(1);
         }
     }
 

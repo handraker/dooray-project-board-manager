@@ -27,12 +27,24 @@ class DoorayService {
       .pipe(map((response) => response.data));
   }
 
+  getIssue$({ issueId }) {
+    return rxios
+      .get(`/v2/wapi/posts/${issueId}`)
+      .pipe(map((response) => response.data.result.content));
+  }
+
+  getPost$({ projectId, number }) {
+    return rxios
+      .get(`/v2/wapi/projects/!${projectId}/posts/${number}`)
+      .pipe(map((response) => response.data.result.content));
+  }
+
   getChildIssue$({ parentIssueId }) {
-    return rxios.get(`v2/wapi/posts/${parentIssueId}`).pipe(
+    return rxios.get(`/v2/wapi/posts/${parentIssueId}`).pipe(
       map((response) => response.data.result.content),
       mergeMap((content) =>
         rxios.get(
-          `v2/wapi/projects/!${content.projectId}/posts/${content.number}/sub-posts`
+          `/v2/wapi/projects/!${content.projectId}/posts/${content.number}/sub-posts`
         )
       ),
       map((response) => response.data)

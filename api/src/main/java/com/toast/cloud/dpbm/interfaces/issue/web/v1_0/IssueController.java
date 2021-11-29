@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -67,6 +68,12 @@ public class IssueController {
             .to(request.getTo().atStartOfDay(ZoneId.systemDefault()))
             .workflowTypeCode(request.getWorkflowTypeCode())
             .build());
+    }
+
+    @CrossOrigin("https://nhnent.dooray.com")
+    @GetMapping("/dpbm/issue/{issueId}")
+    public Optional<IssueDTO> getIssue(@PathVariable("issueId") String issueId) {
+        return issueAppService.getIssue(issueId);
     }
 
 }

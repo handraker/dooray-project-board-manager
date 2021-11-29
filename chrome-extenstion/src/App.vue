@@ -26,6 +26,8 @@ import MilestoneParentIssueBoardMain from '@/components/board/MilestoneParentIss
 import ParentIssueBoardMain from '@/components/board/ParentIssueBoardMain.vue';
 import ParentIssueGanttMain from '@/components/board/ParentIssueGanttMain.vue';
 import Configuration from '@/components/config/Configuration.vue';
+import eventBus from '@/EventBus';
+import { issueService } from '@/service/issue-service';
 
 export default {
   data() {
@@ -90,8 +92,10 @@ export default {
       const lastIndex = pathname.lastIndexOf('/project/');
       this.projectId = pathname.substr(lastIndex + 9, 19);
     }, 1000);
+    eventBus.$on('importIssue', this.importIssue);
   },
   destroyed() {
+    eventBus.$off('importIssue');
     clearInterval(this.intervalId);
   },
   methods: {
@@ -104,6 +108,11 @@ export default {
     ...mapActions('project', ['getProject']),
     selectTab(idx) {
       this.selectedTabIdx = idx;
+    },
+    importIssue(issueId) {
+      issueService
+        .importIssue$({ projectId: this.projectId, issueId })
+        .subscribe();
     },
   },
 };

@@ -8,45 +8,109 @@
         {{ moduleName }}
       </h4>
     </div>
+    <div style="margin: 10px 0;">
+      <div
+        class="form-check form-check-inline align-middle"
+        style="margin-left: 5px;"
+      >
+        <input
+          :id="`showAll-${moduleId}`"
+          v-model="showAll"
+          class="form-check-input"
+          type="checkbox"
+          name="showAll"
+        />
+        <label class="form-check-label" :for="`showAll-${moduleId}`"
+          >전체보기</label
+        >
+      </div>
+    </div>
     <div class="content">
-      <table class="table table-bordered gantt table-hover">
+      <table
+        style="background-color: white;"
+        class="table table-bordered gantt table-hover"
+      >
         <thead>
           <tr>
             <th
               class="align-middle fixed-first-column"
               rowspan="2"
               style="min-width: 500px;"
+              :style="cellStyle"
             >
               이슈
             </th>
-            <th class="align-middle" rowspan="2">개발 기한</th>
-            <th class="align-middle" rowspan="2">배포 기한</th>
+            <th
+              v-if="editable"
+              :style="cellStyle"
+              class="align-middle"
+              rowspan="2"
+            >
+              필터
+            </th>
+            <th
+              v-if="editable"
+              :style="cellStyle"
+              class="align-middle"
+              rowspan="2"
+            >
+              개발 기한
+            </th>
+            <th
+              v-if="editable"
+              :style="cellStyle"
+              class="align-middle"
+              rowspan="2"
+            >
+              배포 기한
+            </th>
             <th
               v-for="(month, no) in months"
               :key="no"
               :colspan="month.weekCount"
               class="text-center"
+              :style="cellStyle"
             >
               {{ month.year }}년 {{ month.month }}월
             </th>
-            <th class="align-middle" rowspan="2">개발 기한</th>
-            <th class="align-middle" rowspan="2">배포 기한</th>
+            <th
+              v-if="editable"
+              :style="cellStyle"
+              class="align-middle"
+              rowspan="2"
+            >
+              개발 기한
+            </th>
+            <th
+              v-if="editable"
+              :style="cellStyle"
+              class="align-middle"
+              rowspan="2"
+            >
+              배포 기한
+            </th>
           </tr>
           <tr>
-            <th v-for="(week, no) in weeks" :key="no" class="week">
+            <th
+              v-for="(week, no) in weeks"
+              :key="no"
+              class="week"
+              :style="cellStyle"
+            >
               {{ week.weekOfMonth }}
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="boardItem in boardItems" :key="boardItem.id">
-            <td class="issue fixed-first-column">
+          <tr v-for="boardItem in filterredBoardItems" :key="boardItem.id">
+            <td class="issue fixed-first-column" :style="issueCellStyle">
               <a
                 :href="`/project/${projectId}/${boardItem.parentIssue.issueId}`"
                 @click="moveIssue"
                 >{{ boardItem.parentIssue.title }}</a
               >
               <button
+                v-if="editable"
                 type="button"
                 class="d-toolbar-white-icon-btn open-new-popup-btn ng-scope"
                 tooltip-class="icon-tooltip in-button"
@@ -55,7 +119,17 @@
                 <span class="v2-icons-open-new"></span>
               </button>
             </td>
-            <td>
+            <td v-if="editable">
+              <button
+                class="btn btn-sm"
+                :class="boardItem.show ? 'btn-danger' : 'btn-primary'"
+                @click="toggleShow(boardItem)"
+              >
+                <span v-if="boardItem.show">감추기</span>
+                <span v-else>보기</span>
+              </button>
+            </td>
+            <td v-if="editable">
               <date-progress-bar
                 :from="boardItem.devDateProgress.from"
                 :to="boardItem.devDateProgress.to"
@@ -66,7 +140,7 @@
                 @change="changeDevDate($event, boardItem.parentIssue)"
               />
             </td>
-            <td>
+            <td v-if="editable">
               <date-progress-bar
                 :from="boardItem.deployDateProgress.from"
                 :to="boardItem.deployDateProgress.to"
@@ -86,7 +160,7 @@
               class="week"
               :class="{ today: isTodayInWeek(week) }"
             ></td>
-            <td>
+            <td v-if="editable">
               <date-progress-bar
                 :from="boardItem.devDateProgress.from"
                 :to="boardItem.devDateProgress.to"
@@ -97,7 +171,7 @@
                 @change="changeDevDate($event, boardItem.parentIssue)"
               />
             </td>
-            <td>
+            <td v-if="editable">
               <date-progress-bar
                 :from="boardItem.deployDateProgress.from"
                 :to="boardItem.deployDateProgress.to"
@@ -124,6 +198,7 @@ import { mapGetters, mapState } from 'vuex';
 import { boardService } from '@/service/board-service';
 import DateProgressBar from '@/components/progress-bar/DateProgressBar.vue';
 import { issueService } from '@/service/issue-service';
+import { mergeMap, tap, toArray } from 'rxjs/operators';
 
 export default {
   components: { DateProgressBar },
@@ -131,6 +206,10 @@ export default {
     moduleId: {
       required: true,
       type: String,
+    },
+    editable: {
+      required: true,
+      type: Boolean,
     },
   },
   data() {
@@ -141,6 +220,7 @@ export default {
       isDown: false,
       startX: 0,
       scrollLeft: 0,
+      showAll: true,
     };
   },
   computed: {
@@ -151,6 +231,31 @@ export default {
       'getWorkingTypeId',
       'getMandays',
     ]),
+    filterredBoardItems() {
+      if (this.showAll) {
+        return this.boardItems;
+      } else {
+        return this.boardItems.filter((item) => item.show);
+      }
+    },
+    cellStyle() {
+      if (this.editable) {
+        return {};
+      } else {
+        return {
+          padding: 0,
+          height: '20px',
+          'text-align': 'center',
+        };
+      }
+    },
+    issueCellStyle() {
+      return {
+        ...this.cellStyle,
+        'text-align': 'left',
+        padding: '0 0 0 5px',
+      };
+    },
     moduleColor() {
       return `#${this.getModule(this.moduleId).color}`;
     },
@@ -239,6 +344,9 @@ export default {
     });
   },
   methods: {
+    toggleShow(boardItem) {
+      boardItem.show = !boardItem.show;
+    },
     isTodayInWeek(week) {
       const today = moment().day(1);
       return today.isSameOrAfter(week.start) && today.isSameOrBefore(week.end);
@@ -278,15 +386,19 @@ export default {
     getWeekStyle(week, boardItem) {
       if (this.isDevDateInWeek(week, boardItem)) {
         return {
+          ...this.cellStyle,
           'background-color': this.moduleColor,
         };
       } else if (this.isDeployDateInWeek(week, boardItem)) {
         return {
+          ...this.cellStyle,
           'background-color': this.moduleColor,
           opacity: 0.5,
         };
       } else {
-        return {};
+        return {
+          ...this.cellStyle,
+        };
       }
     },
     weekOfMonth(date) {
@@ -310,7 +422,12 @@ export default {
           showInProgress: true,
           withStatistics: false,
         })
-        .subscribe((response) => (this.boardItems = response.items));
+        .pipe(
+          mergeMap((response) => response.items),
+          tap((item) => (item.show = true)),
+          toArray()
+        )
+        .subscribe((boardItems) => (this.boardItems = boardItems));
     },
     moveIssue() {
       document
@@ -363,7 +480,7 @@ table {
 .fixed-first-column {
   position: sticky;
   left: 0px;
-  z-index: 10000;
+  z-index: 1;
   background-color: white;
 }
 

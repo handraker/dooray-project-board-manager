@@ -24,10 +24,13 @@ public class IssueAppService {
     private final IssueProgressRepository issueProgressRepository;
     private final ClockifyTimeEntryService clockifyTimeEntryService;
 
+    public Optional<IssueDTO> getIssue(String issueId) {
+        return issueRepository.findById(issueId)
+            .map(issue -> new IssueDTO(issue, clockifyTimeEntryService.getCurrentTimeEntry()));
+    }
+
     public List<IssueDTO> getIssues(String memberId, Predicate predicate) {
-        Optional<ClockifyTimeEntry> timeEntryOptional = Optional.ofNullable(memberId)
-            .filter(id -> id.equals("1387695629192606464"))
-            .flatMap(id -> clockifyTimeEntryService.getCurrentTimeEntry());
+        Optional<ClockifyTimeEntry> timeEntryOptional = clockifyTimeEntryService.getCurrentTimeEntry();
 
         return issueRepository.findByPredicate(predicate)
             .stream()

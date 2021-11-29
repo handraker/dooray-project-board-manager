@@ -69,6 +69,7 @@ import { mapState } from 'vuex';
 import { issueService } from '@/service/issue-service';
 import MemberBoardHorizontalTable from '@/components/board/MemberBoardHorizontalTable.vue';
 import MemberBoardVerticalTable from '@/components/board/MemberBoardVerticalTable.vue';
+import eventBus from '@/EventBus';
 
 export default {
   components: { MemberBoardHorizontalTable, MemberBoardVerticalTable },
@@ -114,8 +115,11 @@ export default {
       },
     },
   },
-  mounted() {
-    console.log('mounted');
+  created() {
+    eventBus.$on('show-board', this.getIssueList);
+  },
+  destroyed() {
+    eventBus.$off('shot-board');
   },
   methods: {
     getIssueList() {

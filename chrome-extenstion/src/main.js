@@ -6,74 +6,86 @@ import '@/config/axios';
 import '@/config/bootstrap';
 import '@/config/plugins';
 import '@/assets/main.css';
+import eventBus from '@/EventBus';
+import clockifyHandler from '@/clockify';
 
 Vue.config.productionTip = false;
 
-let topHeaderDiv = null;
 let originalSection = null;
-let parentSection = null;
-let section = null;
-let divider = null;
-let button = null;
-let app = null;
+let vueSection = null;
 let vueApp = null;
 
 setInterval(() => {
-  topHeaderDiv = document.querySelector(
+  clockifyHandler();
+
+  let topHeaderDiv = document.querySelector(
     '#main-wrapper > section > section > section > project-contents-layout > project-contents-header > div > project-contents-type-selector > div'
   );
-  if (topHeaderDiv != null) {
-    if (document.getElementById('dooray-project-board-manager-btn')) {
-      return;
-    }
+
+  if (topHeaderDiv === null) {
+    return;
+  }
+
+  if (originalSection === null) {
     originalSection = document.querySelector('.main-contents-body');
+  }
 
-    divider = document.createElement('div');
-    divider.className = 'divide-bar';
-    topHeaderDiv.appendChild(divider);
+  if (originalSection === null) {
+    return;
+  }
 
-    button = document.createElement('button');
-    button.id = 'dooray-project-board-manager-btn';
-    button.innerText = '특수보드';
-    button.addEventListener('click', () => {
-      topHeaderDiv
-        .getElementsByTagName('button')
-        .forEach((child) => (child.className = ''));
-      button.className = 'active';
+  if (vueApp === null) {
+    vueSection = document.createElement('section');
+    vueSection.id = 'dooray-project-board-manager';
+    vueSection.className = 'main-contents-body layout-row';
+    vueSection.style.display = 'none';
+    vueSection.style.height = '100%';
 
-      originalSection.style.display = 'none';
+    let app = document.createElement('div');
+    vueSection.appendChild(app);
 
-      section = document.createElement('section');
-      section.id = 'dooray-project-board-manager';
-      section.className = 'main-contents-body layout-row';
-      section.style.display = 'flex';
-      section.style.height = '100%';
+    let parentSection = originalSection.parentElement;
+    parentSection.appendChild(vueSection);
 
-      app = document.createElement('div');
-      section.appendChild(app);
-
-      parentSection = originalSection.parentElement;
-      parentSection.appendChild(section);
-
-      vueApp = new Vue({
-        el: app,
-        store,
-        render: (h) => h(App),
-      });
-    });
-    topHeaderDiv.appendChild(button);
-
-    topHeaderDiv.addEventListener('click', (e) => {
-      const btn = e.path.find((elem) => elem.tagName === 'BUTTON');
-      if (e.target !== button && btn !== undefined) {
-        button.className = '';
-        originalSection.style.display = 'flex';
-
-        btn.className = 'active';
-
-        vueApp.$destroy();
-        document.getElementById('dooray-project-board-manager').remove();
-      }
+    vueApp = new Vue({
+      el: app,
+      store,
+      render: (h) => h(App),
     });
   }
+
+  if (document.getElementById('dooray-project-board-manager-btn')) {
+    return;
+  }
+
+  let divider = document.createElement('div');
+  divider.className = 'divide-bar';
+  topHeaderDiv.appendChild(divider);
+
+  let button = document.createElement('button');
+  button.id = 'dooray-project-board-manager-btn';
+  button.innerText = '특수보드';
+  button.addEventListener('click', () => {
+    topHeaderDiv
+      .getElementsByTagName('button')
+      .forEach((child) => (child.className = ''));
+    button.className = 'active';
+
+    vueSection.style.display = 'flex';
+    originalSection.style.display = 'none';
+
+    eventBus.$emit('show-board');
+  });
+  topHeaderDiv.appendChild(button);
+
+  topHeaderDiv.addEventListener('click', (e) => {
+    const btn = e.path.find((elem) => elem.tagName === 'BUTTON');
+    if (e.target !== button && btn !== undefined) {
+      button.className = '';
+      vueSection.style.display = 'none';
+      originalSection.style.display = 'flex';
+
+      btn.className = 'active';
+    }
+  });
 }, 1000);

@@ -1,9 +1,54 @@
 import rxios from '@/common/rxios';
+import store from '@/store';
 import { DPBM_HOST } from '@/common/constant';
 
-import { map } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
+import { doorayService } from '@/service/dooray-service';
 
 class IssueService {
+  importIssue$({ projectId, issueId }) {
+    function getMemberId(users) {
+      const members = users.to.filter((to) => to.type === 'member');
+      if (members.length > 0) {
+        return members[0].member.organizationMemberId;
+      } else {
+        return null;
+      }
+    }
+
+    return doorayService.getIssue$({ issueId }).pipe(
+      mergeMap((issue) =>
+        doorayService.getPost$({ projectId, number: issue.number })
+      ),
+      map((doorayIssue) => {
+        let moduleId = store.getters['project/getModuleId'](
+          doorayIssue.tagIdList
+        );
+
+        return {
+          issueId: doorayIssue.id,
+          parentIssueId:
+            doorayIssue.parent !== null ? doorayIssue.parent.id : null,
+          projectId: projectId,
+          title: doorayIssue.subject,
+          issueNo: doorayIssue.number,
+          memberId: getMemberId(doorayIssue.users),
+          moduleId,
+          workingTypeId: store.getters['project/getWorkingTypeId'](
+            doorayIssue.tagIdList
+          ),
+          mandays: store.getters['project/getMandays'](doorayIssue.tagIdList),
+          workflowId: doorayIssue.workflowId,
+          workflowTypeCode: doorayIssue.workflowClass.toUpperCase(),
+          milestoneId: doorayIssue.milestoneId,
+          tagIdList: doorayIssue.tagIdList,
+          updatedAt: doorayIssue.updatedAt,
+        };
+      }),
+      mergeMap((issue) => issueService.create$([issue]))
+    );
+  }
+
   getIssues$({ projectId, memberId, workflowTypeCode, from, to }) {
     return rxios
       .get(`${DPBM_HOST}/dpbm/issue`, {

@@ -30,7 +30,9 @@ public class IssueAppService {
     }
 
     public List<IssueDTO> getIssues(String memberId, Predicate predicate) {
-        Optional<ClockifyTimeEntry> timeEntryOptional = clockifyTimeEntryService.getCurrentTimeEntry();
+        Optional<ClockifyTimeEntry> timeEntryOptional = Optional.ofNullable(memberId)
+            .filter(id -> id.equals("1387695629192606464"))
+            .flatMap(id -> clockifyTimeEntryService.getCurrentTimeEntry());
 
         return issueRepository.findByPredicate(predicate)
             .stream()

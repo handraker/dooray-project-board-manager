@@ -11,12 +11,26 @@ import clockifyHandler from '@/clockify';
 
 Vue.config.productionTip = false;
 
+let memberId = null;
 let originalSection = null;
 let vueSection = null;
 let vueApp = null;
 
+function getMemberId() {
+  if (memberId !== null) {
+    return;
+  }
+
+  fetch('/v2/wapi/members/me')
+    .then((response) => response.json())
+    .then((data) => (memberId = data.result.content.id));
+}
+
 setInterval(() => {
-  clockifyHandler();
+  getMemberId();
+  if (memberId !== null && memberId === '1387695629192606464') {
+    clockifyHandler();
+  }
 
   let topHeaderDiv = document.querySelector(
     '#main-wrapper > section > section > section > project-contents-layout > project-contents-header > div > project-contents-type-selector > div'

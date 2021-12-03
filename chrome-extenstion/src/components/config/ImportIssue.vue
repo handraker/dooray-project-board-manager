@@ -49,7 +49,9 @@ export default {
   methods: {
     getMemberId(users) {
       const members = users.to.filter((to) => to.type === 'member');
-      if (members.length > 0) {
+      if (members.length > 1) {
+        return null;
+      } else if (members.length == 1) {
         return members[0].member.organizationMemberId;
       } else {
         return null;

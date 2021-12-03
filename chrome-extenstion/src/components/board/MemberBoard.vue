@@ -11,6 +11,7 @@
         <div class="col">
           <member-board-vertical-table
             title="할일"
+            :member="member"
             :issue-list="registeredIssueList"
             table-class="registered"
           />
@@ -18,6 +19,7 @@
         <div class="col">
           <member-board-vertical-table
             title="진행 중"
+            :member="member"
             :issue-list="workingIssueList"
             table-class="working"
           />
@@ -25,6 +27,7 @@
         <div class="col">
           <member-board-vertical-table
             title="완료"
+            :member="member"
             :issue-list="closedIssueList"
             table-class="closed"
           />
@@ -36,6 +39,7 @@
         <div class="col">
           <member-board-horizontal-table
             title="할일"
+            :member="member"
             :issue-list="registeredIssueList"
             table-class="registered"
           />
@@ -45,6 +49,7 @@
         <div class="col">
           <member-board-horizontal-table
             title="진행 중"
+            :member="member"
             :issue-list="workingIssueList"
             table-class="working"
           />
@@ -54,6 +59,7 @@
         <div class="col">
           <member-board-horizontal-table
             title="완료"
+            :member="member"
             :issue-list="closedIssueList"
             table-class="closed"
           />
@@ -90,6 +96,10 @@ export default {
       type: String,
       required: true,
     },
+    showAllRegistered: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -103,13 +113,16 @@ export default {
   },
   watch: {
     from: {
-      immediate: true,
       handler() {
         this.getIssueList();
       },
     },
     to: {
-      immediate: true,
+      handler() {
+        this.getIssueList();
+      },
+    },
+    showAllRegistered: {
       handler() {
         this.getIssueList();
       },
@@ -118,20 +131,35 @@ export default {
   created() {
     eventBus.$on('show-board', this.getIssueList);
   },
+  mounted() {
+    this.getIssueList();
+  },
   destroyed() {
     eventBus.$off('shot-board');
   },
   methods: {
     getIssueList() {
-      issueService
-        .getIssues$({
-          projectId: this.projectId,
-          memberId: this.member.id,
-          from: '2000-01-01',
-          to: '9999-12-31',
-          workflowTypeCode: 'REGISTERED',
-        })
-        .subscribe((issueList) => (this.registeredIssueList = issueList));
+      if (this.showAllRegistered) {
+        issueService
+          .getIssues$({
+            projectId: this.projectId,
+            memberId: this.member.id,
+            from: '2000-01-01',
+            to: '9999-12-31',
+            workflowTypeCode: 'REGISTERED',
+          })
+          .subscribe((issueList) => (this.registeredIssueList = issueList));
+      } else {
+        issueService
+          .getIssues$({
+            projectId: this.projectId,
+            memberId: this.member.id,
+            from: this.from,
+            to: this.to,
+            workflowTypeCode: 'REGISTERED',
+          })
+          .subscribe((issueList) => (this.registeredIssueList = issueList));
+      }
       issueService
         .getIssues$({
           projectId: this.projectId,

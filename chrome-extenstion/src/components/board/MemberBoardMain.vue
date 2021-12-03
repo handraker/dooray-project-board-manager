@@ -28,6 +28,18 @@
         />
         <label class="form-check-label" for="viewMode_HORIZONTAL">가로</label>
       </div>
+      <div class="form-check form-check-inline align-middle">
+        <input
+          id="showAllRegistered"
+          v-model="showAllRegistered"
+          class="form-check-input"
+          type="checkbox"
+          name="showAllRegistered"
+        />
+        <label class="form-check-label" for="showAllRegistered"
+          >모든 할일 보기</label
+        >
+      </div>
     </div>
     <member-board
       v-for="member in projectMembers"
@@ -36,6 +48,7 @@
       :from="from"
       :to="to"
       :view-mode="viewMode"
+      :show-all-registered="showAllRegistered"
     />
   </div>
 </template>
@@ -53,6 +66,7 @@ export default {
       from: moment().subtract(5, 'd').format('YYYY-MM-DD'),
       to: moment().add(1, 'd').format('YYYY-MM-DD'),
       viewMode: 'HORIZONTAL',
+      showAllRegistered: false,
     };
   },
   computed: {

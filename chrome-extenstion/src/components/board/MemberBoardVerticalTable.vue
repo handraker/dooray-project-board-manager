@@ -27,23 +27,25 @@
             >
               <span class="v2-icons-open-new"></span>
             </button>
-            <button
-              v-if="issue.inProgress"
-              type="button"
-              class="d-toolbar-white-icon-btn open-new-popup-btn ng-scope"
-              style="color: #e74c3c;"
-              @click="stopTimer(issue)"
-            >
-              ■ 중지 {{ getTimeProgress(issue) }}
-            </button>
-            <button
-              v-else
-              type="button"
-              class="d-toolbar-white-icon-btn open-new-popup-btn ng-scope"
-              @click="startTimer(issue)"
-            >
-              ▶ 시작
-            </button>
+            <template v-if="member.id === '1387695629192606464'">
+              <button
+                v-if="issue.inProgress"
+                type="button"
+                class="d-toolbar-white-icon-btn open-new-popup-btn ng-scope"
+                style="color: #e74c3c;"
+                @click="stopTimer(issue)"
+              >
+                ■ 중지 {{ getTimeProgress(issue) }}
+              </button>
+              <button
+                v-else
+                type="button"
+                class="d-toolbar-white-icon-btn open-new-popup-btn ng-scope"
+                @click="startTimer(issue)"
+              >
+                ▶ 시작
+              </button>
+            </template>
           </div>
           <div class="mt-1 row">
             <div class="col">
@@ -79,6 +81,10 @@ import { issueService } from '@/service/issue-service';
 
 export default {
   props: {
+    member: {
+      type: Object,
+      required: true,
+    },
     title: {
       required: true,
       type: String,

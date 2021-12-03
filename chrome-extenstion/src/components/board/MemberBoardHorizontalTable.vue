@@ -31,6 +31,25 @@
             >
               <span class="v2-icons-open-new"></span>
             </button>
+            <template v-if="member.id === '1387695629192606464'">
+              <button
+                v-if="issue.inProgress"
+                type="button"
+                class="d-toolbar-white-icon-btn open-new-popup-btn ng-scope"
+                style="color: #e74c3c;"
+                @click="stopTimer(issue)"
+              >
+                ■ 중지 {{ getTimeProgress(issue) }}
+              </button>
+              <button
+                v-else
+                type="button"
+                class="d-toolbar-white-icon-btn open-new-popup-btn ng-scope"
+                @click="startTimer(issue)"
+              >
+                ▶ 시작
+              </button>
+            </template>
           </div>
           <div class="inline-box" title="태그">
             <span class="tag-group">
@@ -54,9 +73,15 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex';
+import moment from 'moment';
+import { issueService } from '@/service/issue-service';
 
 export default {
   props: {
+    member: {
+      type: Object,
+      required: true,
+    },
     title: {
       required: true,
       type: String,
@@ -74,8 +99,36 @@ export default {
     ...mapState('project', ['projectId']),
     ...mapState('dooray', ['tags']),
     ...mapGetters('dooray', ['getMilestone', 'getTagStyle']),
+    ...mapGetters('project', ['getModule']),
   },
   methods: {
+    getTimeProgress(issue) {
+      if (!issue.inProgress) {
+        return '';
+      } else {
+        return moment
+          .utc(moment(this.currentTime).diff(issue.startedAt))
+          .format('HH:mm:ss');
+      }
+    },
+    startTimer(issue) {
+      const name = this.getModule(issue.moduleId).name;
+      const idx = name.lastIndexOf(':');
+      issueService
+        .startTimer({
+          issueId: issue.issueId,
+          moduleName: name.substr(idx + 1).trim(),
+        })
+        .subscribe(() => {
+          issue.inProgress = true;
+          issue.startedAt = moment();
+        });
+    },
+    stopTimer(issue) {
+      issueService.stopTimer().subscribe(() => {
+        issue.inProgress = false;
+      });
+    },
     moveIssue() {
       document
         .querySelector(

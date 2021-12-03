@@ -11,7 +11,6 @@ function onClickTimer(e) {
 
   if (e.target.innerHTML === '등록') {
     eventBus.$emit('importIssue', issueId);
-    prevIssueId = null;
   } else if (startedAt !== null) {
     fetch('https://alpha-sqlserver-api.cloud.toast.com/dpbm/issue/stop-timer', {
       method: 'POST',
@@ -85,6 +84,7 @@ function clockifyHandler() {
       .then((data) => {
         if (data === null) {
           issueTimerBtn.disabled = false;
+          prevIssueId = null;
           startedAt = null;
           issueTimerBtn.innerHTML = '등록';
           issueTimerBtn.style = '';

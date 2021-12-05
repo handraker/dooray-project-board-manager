@@ -149,7 +149,7 @@ import moment from 'moment';
 import { mapGetters, mapState } from 'vuex';
 import { reduce } from 'lodash-es';
 import { from } from 'rxjs';
-import { mergeMap, toArray } from 'rxjs/operators';
+import { concatMap, mergeMap, toArray } from 'rxjs/operators';
 
 import { getContrast, getWorkingDays } from '@/common/utils';
 import { boardService } from '@/service/board-service';
@@ -289,7 +289,7 @@ export default {
 
       from(this.modules)
         .pipe(
-          mergeMap((module) =>
+          concatMap((module) =>
             boardService.getParentIssueBoard$({
               projectId: this.projectId,
               milestoneId: this.milestone.id,

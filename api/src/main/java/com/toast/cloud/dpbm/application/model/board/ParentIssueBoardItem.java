@@ -52,7 +52,12 @@ public class ParentIssueBoardItem implements Comparable {
 
         int result = parentIssue.getDevStartDate().compareTo(other.parentIssue.getDevStartDate());
         if (result == 0) {
-            return parentIssue.getDevEndDate().compareTo(other.parentIssue.getDevEndDate());
+            result = parentIssue.getDevEndDate().compareTo(other.parentIssue.getDevEndDate());
+            if (result == 0) {
+                return parentIssue.getIssueId().compareTo(other.getParentIssue().getIssueId());
+            } else {
+                return result;
+            }
         } else {
             return result;
         }
